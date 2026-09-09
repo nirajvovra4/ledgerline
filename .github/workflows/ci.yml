@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t ledgerline:ci .
+      - name: Smoke test the image
+        run: |
+          docker run -d --name ll -p 4000:4000 -e SEED_IF_EMPTY=true -e LEDGERLINE_TODAY=2026-06-30 ledgerline:ci
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:4000/api/meta >/dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://localhost:4000/api/meta
+          docker logs ll
+          docker rm -f ll

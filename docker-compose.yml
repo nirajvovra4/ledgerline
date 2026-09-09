@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    image: ledgerline:local
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_PATH: /data/ledgerline.sqlite
+      # Fixed clock so the demo data (anchored to 30 June 2026) renders identically every time.
+      LEDGERLINE_TODAY: "2026-06-30"
+      # Load the Northlight Studio demo automatically on first boot (empty database only).
+      SEED_IF_EMPTY: "true"
+    volumes:
+      - ledgerline-data:/data
+    restart: unless-stopped
+
+volumes:
+  ledgerline-data:

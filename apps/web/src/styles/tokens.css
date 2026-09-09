@@ -1,0 +1,102 @@
+/* Ledgerline design tokens — "ruled paper" */
+:root {
+  --paper: #f6f2ea;
+  --paper-raised: #fbf9f4;
+  --paper-sunken: #efe9de;
+  --ink: #1c2430;
+  --ink-soft: #4a5261;
+  --ink-muted: #7b8291;
+  --ink-faint: #a8adb8;
+  --rule: #d9d3c7;
+  --rule-strong: #c6bfb0;
+  --rule-faint: rgba(28, 36, 48, 0.055);
+
+  --blue: #2b4c7e;
+  --blue-soft: rgba(43, 76, 126, 0.1);
+  --blue-strong: #1f3a63;
+  --red: #a23b2e;
+  --red-soft: rgba(162, 59, 46, 0.1);
+  --moss: #4a6b3f;
+  --moss-soft: rgba(74, 107, 63, 0.12);
+  --amber: #b7791f;
+  --amber-soft: rgba(183, 121, 31, 0.13);
+  --grey: #7b8291;
+  --grey-soft: rgba(123, 130, 145, 0.14);
+
+  --tone-neutral: var(--ink-soft);
+  --tone-info: var(--blue);
+  --tone-positive: var(--moss);
+  --tone-negative: var(--red);
+  --tone-warning: var(--amber);
+  --tone-muted: var(--ink-muted);
+
+  --font-sans:
+    'Segoe UI', 'Helvetica Neue', 'Source Sans 3', 'Gill Sans', 'Trebuchet MS', system-ui, sans-serif;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  --font-mono: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-xs: 0.72rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.9rem;
+  --text-lg: 1.05rem;
+  --text-xl: 1.35rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --radius-sm: 3px;
+  --radius: 5px;
+  --radius-lg: 8px;
+
+  --rail-width: 200px;
+  --strip-height: 56px;
+  --content-max: 1280px;
+  --rule-spacing: 32px;
+
+  --shadow-sm: 0 1px 2px rgba(28, 36, 48, 0.08);
+  --shadow: 0 4px 16px rgba(28, 36, 48, 0.12), 0 1px 3px rgba(28, 36, 48, 0.08);
+  --shadow-lg: 0 16px 48px rgba(28, 36, 48, 0.2);
+
+  --focus-ring: 0 0 0 2px var(--paper), 0 0 0 4px var(--blue);
+  --transition: 120ms ease;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --paper: #151a21;
+  --paper-raised: #1c222b;
+  --paper-sunken: #10141a;
+  --ink: #e9e4d8;
+  --ink-soft: #b9b3a6;
+  --ink-muted: #8a8578;
+  --ink-faint: #5f5b52;
+  --rule: #2b323d;
+  --rule-strong: #3a424f;
+  --rule-faint: rgba(233, 228, 216, 0.06);
+
+  --blue: #7ea1d6;
+  --blue-soft: rgba(126, 161, 214, 0.16);
+  --blue-strong: #a6c0e8;
+  --red: #d4776a;
+  --red-soft: rgba(212, 119, 106, 0.16);
+  --moss: #8db57f;
+  --moss-soft: rgba(141, 181, 127, 0.16);
+  --amber: #d9a24c;
+  --amber-soft: rgba(217, 162, 76, 0.16);
+  --grey: #8a8578;
+  --grey-soft: rgba(138, 133, 120, 0.18);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
