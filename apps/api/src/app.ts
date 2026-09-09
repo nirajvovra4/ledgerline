@@ -122,7 +122,6 @@ export async function buildApp(options: AppOptions): Promise<FastifyInstance> {
     await app.register(fastifyStatic, {
       root: staticDir,
       prefix: '/',
-      wildcard: false,
       index: ['index.html'],
     });
   }

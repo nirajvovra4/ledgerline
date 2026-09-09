@@ -34,7 +34,7 @@ const SHOTS = [
   { name: '02-dashboard', path: `/w/${SLUG}/dashboard`, full: true },
   { name: '02-dashboard-year', path: `/w/${SLUG}/dashboard?range=year`, full: true },
   { name: '02-dashboard-dark', path: `/w/${SLUG}/dashboard`, dark: true, full: true },
-  { name: '02-dashboard-mobile', path: `/w/${SLUG}/dashboard`, viewport: MOBILE, full: true },
+  { name: '02-dashboard-mobile', path: `/w/${SLUG}/dashboard`, viewport: MOBILE },
   { name: '03-clients', path: `/w/${SLUG}/clients` },
   { name: '03-clients-search', path: `/w/${SLUG}/clients?q=mer` },
   { name: '03-clients-archived-empty', path: `/w/${SLUG}/clients?status=archived&q=zzzz` },
@@ -47,7 +47,7 @@ const SHOTS = [
   { name: '04-project-detail', path: `/w/${SLUG}/projects/__PROJECT__`, full: true },
   { name: '04-project-new', path: `/w/${SLUG}/projects/new`, full: true },
   { name: '05-time', path: `/w/${SLUG}/time`, full: true },
-  { name: '05-time-mobile', path: `/w/${SLUG}/time`, viewport: MOBILE, full: true },
+  { name: '05-time-mobile', path: `/w/${SLUG}/time`, viewport: MOBILE },
   { name: '06-invoices', path: `/w/${SLUG}/invoices` },
   { name: '06-invoices-overdue', path: `/w/${SLUG}/invoices?status=overdue` },
   { name: '06-invoices-draft', path: `/w/${SLUG}/invoices?status=draft` },
@@ -86,7 +86,7 @@ const SHOTS = [
   { name: '13-notifications', path: `/w/${SLUG}/notifications` },
   { name: '14-settings-general', path: `/w/${SLUG}/settings`, full: true },
   { name: '14-settings-invoicing', path: `/w/${SLUG}/settings?tab=invoicing`, full: true },
-  { name: '14-settings-tax-rates', path: `/w/${SLUG}/settings?tab=tax-rates`, full: true },
+  { name: '14-settings-tax-rates', path: `/w/${SLUG}/settings?tab=tax`, full: true },
   { name: '14-settings-members', path: `/w/${SLUG}/settings?tab=members`, full: true },
   { name: '14-settings-profile', path: `/w/${SLUG}/settings?tab=profile`, full: true },
   { name: '15-not-found', path: `/w/${SLUG}/nope` },
@@ -95,8 +95,8 @@ const SHOTS = [
 async function loginError(page) {
   await page.context().clearCookies();
   await page.goto(`${BASE}/login`);
-  await page.fill('input[name="email"]', 'ada@northlight.studio');
-  await page.fill('input[name="password"]', 'wrong-password');
+  await page.fill('input[type="email"]', 'ada@northlight.studio');
+  await page.fill('input[type="password"]', 'wrong-password');
   await page.click('button[type="submit"]');
   await page.waitForTimeout(600);
 }
@@ -209,7 +209,7 @@ async function main() {
       await page.setViewportSize(shot.viewport ?? DESKTOP);
       await page.addInitScript((dark) => {
         try {
-          localStorage.setItem('ledgerline.theme', dark ? 'dark' : 'light');
+          localStorage.setItem('ll-theme', dark ? 'dark' : 'light');
         } catch {
           /* ignore */
         }

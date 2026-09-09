@@ -113,6 +113,30 @@ scripts/          count-loc.mjs (line count), screenshots.mjs (Playwright captur
 boots the production server on a throw-away seeded database, logs in and walks every route at
 desktop and mobile widths in light and dark themes).
 
+## Size
+
+`npm run loc` counts non-blank lines in hand-written source (TypeScript, TSX, CSS, scripts,
+config and docs), excluding `node_modules`, build output, the lockfile, the SQLite data
+directory and screenshots. At the time of writing:
+
+| Area                  | Files | Lines  |
+| --------------------- | ----- | ------ |
+| apps/web              | 220   | 20,032 |
+| apps/api              | 87    | 13,523 |
+| packages/shared       | 39    | 7,434  |
+| docs, scripts, config | 10    | 980    |
+| **Total**             | 356   | 41,969 |
+| of which tests        | 67    | 9,296  |
+
+Test run at the same commit (`npm test`):
+
+```
+Test Files  62 passed (62)
+     Tests  577 passed (577)
+```
+
+`npm run typecheck`, `npm run lint` and `npm run format:check` are clean at the same commit.
+
 ## Third-party services
 
 None. There are no external SDKs, API keys or network calls; all data lives in the SQLite file.
