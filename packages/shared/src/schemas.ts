@@ -294,7 +294,7 @@ export const invoiceLineInputSchema = z.object({
     .number({ invalid_type_error: 'Enter a quantity' })
     .positive('Quantity must be greater than zero')
     .max(1_000_000)
-    .refine((q) => Math.round(q * 10_000) === q * 10_000, { message: 'At most four decimal places' }),
+    .refine((q) => Math.abs(q * 10_000 - Math.round(q * 10_000)) < 1e-6, { message: 'At most four decimal places' }),
   unitPriceCents: centsSchema,
   taxRateId: uuidSchema.nullable().default(null),
   accountId: uuidSchema,
