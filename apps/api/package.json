@@ -1,0 +1,27 @@
+{
+  "name": "@ledgerline/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --disable-warning=ExperimentalWarning --import tsx --watch src/server.ts",
+    "build": "node build.mjs",
+    "start": "node --disable-warning=ExperimentalWarning dist/server.js",
+    "migrate": "node --disable-warning=ExperimentalWarning --import tsx src/cli.ts migrate",
+    "seed": "node --disable-warning=ExperimentalWarning --import tsx src/cli.ts seed",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/static": "^8.2.0",
+    "@ledgerline/shared": "*",
+    "fastify": "^5.4.0",
+    "kysely": "^0.28.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "tsx": "^4.20.0"
+  }
+}

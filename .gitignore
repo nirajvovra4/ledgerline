@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+data/*.sqlite
+data/*.sqlite-*
+apps/web/dist/
+apps/api/dist/
+packages/shared/dist/
+playwright-report/
+test-results/
+.vite/
