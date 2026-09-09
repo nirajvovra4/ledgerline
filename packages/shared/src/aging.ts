@@ -26,7 +26,13 @@ export interface AgingInput {
 export function buildAgingReport(open: AgingInput[], asOf: IsoDate): AgingReportDto {
   const byClient = new Map<string, AgingClientRow>();
   const totals = emptyBuckets();
-  const counts: Record<AgingBucketKey, number> = { current: 0, d1_30: 0, d31_60: 0, d61_90: 0, d90_plus: 0 };
+  const counts: Record<AgingBucketKey, number> = {
+    current: 0,
+    d1_30: 0,
+    d31_60: 0,
+    d61_90: 0,
+    d90_plus: 0,
+  };
   let totalCents = 0;
 
   for (const inv of open) {
@@ -35,7 +41,13 @@ export function buildAgingReport(open: AgingInput[], asOf: IsoDate): AgingReport
     const days = Math.max(0, diffDays(inv.dueDate, asOf));
     let row = byClient.get(inv.clientId);
     if (!row) {
-      row = { clientId: inv.clientId, clientName: inv.clientName, buckets: emptyBuckets(), totalCents: 0, oldestDays: 0 };
+      row = {
+        clientId: inv.clientId,
+        clientName: inv.clientName,
+        buckets: emptyBuckets(),
+        totalCents: 0,
+        oldestDays: 0,
+      };
       byClient.set(inv.clientId, row);
     }
     row.buckets[bucket] += inv.balanceCents;
@@ -46,10 +58,17 @@ export function buildAgingReport(open: AgingInput[], asOf: IsoDate): AgingReport
     totalCents += inv.balanceCents;
   }
 
-  const rows = [...byClient.values()].sort((a, b) => b.totalCents - a.totalCents || a.clientName.localeCompare(b.clientName));
+  const rows = [...byClient.values()].sort(
+    (a, b) => b.totalCents - a.totalCents || a.clientName.localeCompare(b.clientName),
+  );
   return {
     asOf,
-    buckets: AGING_BUCKETS.map((b) => ({ bucket: b.key, label: b.label, amountCents: totals[b.key], count: counts[b.key] })),
+    buckets: AGING_BUCKETS.map((b) => ({
+      bucket: b.key,
+      label: b.label,
+      amountCents: totals[b.key],
+      count: counts[b.key],
+    })),
     rows,
     totalCents,
   };

@@ -64,14 +64,12 @@ export async function buildApp(options: AppOptions): Promise<FastifyInstance> {
       return;
     }
     if (error instanceof UnbalancedEntryError) {
-      void reply
-        .status(422)
-        .send(
-          new AppError('unbalanced_entry', error.message, {
-            debitCents: error.debitCents,
-            creditCents: error.creditCents,
-          }).toBody(),
-        );
+      void reply.status(422).send(
+        new AppError('unbalanced_entry', error.message, {
+          debitCents: error.debitCents,
+          creditCents: error.creditCents,
+        }).toBody(),
+      );
       return;
     }
     const http = error as { statusCode?: unknown; message?: unknown };

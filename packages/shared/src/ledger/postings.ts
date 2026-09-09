@@ -23,7 +23,10 @@ export class UnbalancedEntryError extends Error {
   }
 }
 
-export function totals(lines: Array<{ debitCents: Cents; creditCents: Cents }>): { debitCents: Cents; creditCents: Cents } {
+export function totals(lines: Array<{ debitCents: Cents; creditCents: Cents }>): {
+  debitCents: Cents;
+  creditCents: Cents;
+} {
   let debitCents = 0;
   let creditCents = 0;
   for (const l of lines) {
@@ -38,7 +41,9 @@ export function isBalanced(lines: Array<{ debitCents: Cents; creditCents: Cents 
   return t.debitCents === t.creditCents;
 }
 
-export function assertBalanced<T extends { debitCents: Cents; creditCents: Cents }>(lines: T[]): T[] {
+export function assertBalanced<T extends { debitCents: Cents; creditCents: Cents }>(
+  lines: T[],
+): T[] {
   const t = totals(lines);
   if (t.debitCents !== t.creditCents) throw new UnbalancedEntryError(t.debitCents, t.creditCents);
   return lines;
@@ -115,8 +120,18 @@ export interface PaymentPostingInput {
 export function postingsForPayment(input: PaymentPostingInput): PostingLine[] {
   const desc = `Payment for ${input.invoiceNumber} — ${input.clientName}${input.reference ? ` (${input.reference})` : ''}`;
   return assertBalanced([
-    { account: { systemKey: 'cash' }, debitCents: input.amountCents, creditCents: 0, description: desc },
-    { account: { systemKey: 'accounts_receivable' }, debitCents: 0, creditCents: input.amountCents, description: desc },
+    {
+      account: { systemKey: 'cash' },
+      debitCents: input.amountCents,
+      creditCents: 0,
+      description: desc,
+    },
+    {
+      account: { systemKey: 'accounts_receivable' },
+      debitCents: 0,
+      creditCents: input.amountCents,
+      description: desc,
+    },
   ]);
 }
 
@@ -133,25 +148,56 @@ export interface ExpensePostingInput {
 export function postingsForExpense(input: ExpensePostingInput): PostingLine[] {
   const desc = `${input.vendor}: ${input.description}`;
   const lines: PostingLine[] = [
-    { account: { id: input.accountId }, debitCents: input.amountCents, creditCents: 0, description: desc },
+    {
+      account: { id: input.accountId },
+      debitCents: input.amountCents,
+      creditCents: 0,
+      description: desc,
+    },
   ];
   if (input.taxCents !== 0) {
-    lines.push({ account: { systemKey: 'input_tax' }, debitCents: input.taxCents, creditCents: 0, description: `${desc} — input tax` });
+    lines.push({
+      account: { systemKey: 'input_tax' },
+      debitCents: input.taxCents,
+      creditCents: 0,
+      description: `${desc} — input tax`,
+    });
   }
-  lines.push({ account: { systemKey: 'accounts_payable' }, debitCents: 0, creditCents: input.totalCents, description: desc });
+  lines.push({
+    account: { systemKey: 'accounts_payable' },
+    debitCents: 0,
+    creditCents: input.totalCents,
+    description: desc,
+  });
   return assertBalanced(normalisePostings(lines));
 }
 
 /** Expense paid: Dr AP / Cr cash. */
-export function postingsForExpensePayment(input: { vendor: string; totalCents: Cents; reference?: string }): PostingLine[] {
+export function postingsForExpensePayment(input: {
+  vendor: string;
+  totalCents: Cents;
+  reference?: string;
+}): PostingLine[] {
   const desc = `Paid ${input.vendor}${input.reference ? ` (${input.reference})` : ''}`;
   return assertBalanced([
-    { account: { systemKey: 'accounts_payable' }, debitCents: input.totalCents, creditCents: 0, description: desc },
-    { account: { systemKey: 'cash' }, debitCents: 0, creditCents: input.totalCents, description: desc },
+    {
+      account: { systemKey: 'accounts_payable' },
+      debitCents: input.totalCents,
+      creditCents: 0,
+      description: desc,
+    },
+    {
+      account: { systemKey: 'cash' },
+      debitCents: 0,
+      creditCents: input.totalCents,
+      description: desc,
+    },
   ]);
 }
 
 /** Swap debits and credits to reverse an entry. */
-export function reversePostings<T extends { debitCents: Cents; creditCents: Cents }>(lines: T[]): T[] {
+export function reversePostings<T extends { debitCents: Cents; creditCents: Cents }>(
+  lines: T[],
+): T[] {
   return lines.map((l) => ({ ...l, debitCents: l.creditCents, creditCents: l.debitCents }));
 }

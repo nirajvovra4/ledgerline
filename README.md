@@ -98,13 +98,13 @@ scripts/          count-loc.mjs (line count), screenshots.mjs (Playwright captur
 
 ## Environment variables
 
-| Variable          | Default                   | Purpose                                            |
-| ----------------- | ------------------------- | -------------------------------------------------- |
-| `PORT`            | `4000`                    | API / web port                                     |
-| `DATABASE_PATH`   | `./data/ledgerline.sqlite`| SQLite file (`:memory:` for tests)                 |
-| `LEDGERLINE_TODAY`| unset (real clock)        | Pin "today" to a `YYYY-MM-DD` date                 |
-| `SEED_IF_EMPTY`   | `false`                   | Seed the demo on startup when there are no users   |
-| `STATIC_DIR`      | `apps/web/dist` if present| Built web app to serve with an SPA fallback        |
+| Variable           | Default                    | Purpose                                          |
+| ------------------ | -------------------------- | ------------------------------------------------ |
+| `PORT`             | `4000`                     | API / web port                                   |
+| `DATABASE_PATH`    | `./data/ledgerline.sqlite` | SQLite file (`:memory:` for tests)               |
+| `LEDGERLINE_TODAY` | unset (real clock)         | Pin "today" to a `YYYY-MM-DD` date               |
+| `SEED_IF_EMPTY`    | `false`                    | Seed the demo on startup when there are no users |
+| `STATIC_DIR`       | `apps/web/dist` if present | Built web app to serve with an SPA fallback      |
 
 ## Screenshots
 

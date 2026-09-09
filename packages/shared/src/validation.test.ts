@@ -27,7 +27,9 @@ describe('validate', () => {
   });
 
   it('applies schema transforms and defaults', () => {
-    const result = validate(z.object({ a: z.string().trim(), b: z.number().default(3) }), { a: '  hi ' });
+    const result = validate(z.object({ a: z.string().trim(), b: z.number().default(3) }), {
+      a: '  hi ',
+    });
     expect(result).toEqual({ ok: true, data: { a: 'hi', b: 3 } });
   });
 
@@ -43,7 +45,9 @@ describe('formatIssues', () => {
     const parsed = schema.safeParse({ name: 'x', amount: 'y', lines: [] });
     expect(parsed.success).toBe(false);
     if (parsed.success) return;
-    expect(formatIssues(parsed.error)).toEqual([{ path: 'amount', message: 'Expected number, received string', code: 'invalid_type' }]);
+    expect(formatIssues(parsed.error)).toEqual([
+      { path: 'amount', message: 'Expected number, received string', code: 'invalid_type' },
+    ]);
   });
 
   it('accepts any object with an issues array', () => {

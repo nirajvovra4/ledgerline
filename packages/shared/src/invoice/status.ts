@@ -1,6 +1,12 @@
 import { isBefore } from '../dates';
 import { can } from '../permissions';
-import type { DerivedInvoiceStatus, InvoiceStatus, IsoDate, Role, WorkspaceSettings } from '../types';
+import type {
+  DerivedInvoiceStatus,
+  InvoiceStatus,
+  IsoDate,
+  Role,
+  WorkspaceSettings,
+} from '../types';
 
 export const INVOICE_TRANSITIONS: Record<InvoiceStatus, InvoiceStatus[]> = {
   draft: ['pending_approval', 'approved', 'void'],
@@ -17,7 +23,12 @@ export function canTransition(from: InvoiceStatus, to: InvoiceStatus): boolean {
 }
 
 export const OPEN_INVOICE_STATUSES: InvoiceStatus[] = ['approved', 'sent', 'partially_paid'];
-export const POSTED_INVOICE_STATUSES: InvoiceStatus[] = ['approved', 'sent', 'partially_paid', 'paid'];
+export const POSTED_INVOICE_STATUSES: InvoiceStatus[] = [
+  'approved',
+  'sent',
+  'partially_paid',
+  'paid',
+];
 
 export function isOpenInvoice(status: InvoiceStatus): boolean {
   return OPEN_INVOICE_STATUSES.includes(status);
@@ -36,14 +47,21 @@ export function deriveInvoiceStatus(
   invoice: { status: InvoiceStatus; dueDate: IsoDate; balanceCents?: number },
   today: IsoDate,
 ): DerivedInvoiceStatus {
-  if ((invoice.status === 'sent' || invoice.status === 'partially_paid') && isBefore(invoice.dueDate, today)) {
+  if (
+    (invoice.status === 'sent' || invoice.status === 'partially_paid') &&
+    isBefore(invoice.dueDate, today)
+  ) {
     return 'overdue';
   }
   return invoice.status;
 }
 
 /** Status after a payment is applied. */
-export function statusAfterPayment(current: InvoiceStatus, totalCents: number, amountPaidCents: number): InvoiceStatus {
+export function statusAfterPayment(
+  current: InvoiceStatus,
+  totalCents: number,
+  amountPaidCents: number,
+): InvoiceStatus {
   if (current === 'void' || current === 'draft' || current === 'pending_approval') return current;
   if (amountPaidCents >= totalCents) return 'paid';
   if (amountPaidCents > 0) return 'partially_paid';
@@ -85,8 +103,7 @@ export function invoiceActions(ctx: InvoiceActionContext): InvoiceAction[] {
         actions.push('edit', 'delete');
         if (settings.requireInvoiceApproval) actions.push('submit');
       }
-      if (approveOk && !settings.requireInvoiceApproval) actions.push('approve');
-      if (approveOk && settings.requireInvoiceApproval) actions.push('approve');
+      if (approveOk) actions.push('approve');
       break;
     case 'pending_approval':
       if (approveOk) actions.push('approve', 'reject');

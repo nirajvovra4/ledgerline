@@ -136,7 +136,11 @@ export interface FormatMoneyOptions {
  * Deterministic money formatter. We deliberately avoid Intl so that the output is identical on
  * every runtime (tests, server-rendered documents and the browser).
  */
-export function formatMoney(cents: Cents, currency: string, options: FormatMoneyOptions = {}): string {
+export function formatMoney(
+  cents: Cents,
+  currency: string,
+  options: FormatMoneyOptions = {},
+): string {
   assertCents(cents);
   const info = currencyInfo(currency);
   const negative = cents < 0;
@@ -198,7 +202,11 @@ export function parseMoneyInput(input: string, decimals = 2): Cents | null {
   const lastSep = Math.max(lastComma, lastDot);
   let whole = s;
   let frac = '';
-  if (lastSep >= 0 && s.length - lastSep - 1 <= Math.max(decimals, 1) && s.length - lastSep - 1 > 0) {
+  if (
+    lastSep >= 0 &&
+    s.length - lastSep - 1 <= Math.max(decimals, 1) &&
+    s.length - lastSep - 1 > 0
+  ) {
     whole = s.slice(0, lastSep);
     frac = s.slice(lastSep + 1);
   } else if (lastSep >= 0 && s.length - lastSep - 1 === 0) {

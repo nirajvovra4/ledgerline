@@ -52,7 +52,9 @@ describe('summariseTaxByRate', () => {
       { taxRateId: null, name: '10%', rateBp: 1000, netCents: 400, taxCents: 40 },
       { taxRateId: null, name: 'No tax', rateBp: 0, netCents: 50, taxCents: 0 },
     ]);
-    expect(summariseTaxByRate([{ netCents: 100, taxRateId: null, taxRateBp: 1250 }])[0]?.name).toBe('12.5%');
+    expect(summariseTaxByRate([{ netCents: 100, taxRateId: null, taxRateBp: 1250 }])[0]?.name).toBe(
+      '12.5%',
+    );
   });
 
   it('computes tax per line before summing', () => {

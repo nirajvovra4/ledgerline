@@ -142,7 +142,9 @@ describe('compareStrings / compareNatural', () => {
   });
 
   it('orders an array of invoice numbers naturally', () => {
-    const sorted = ['INV-0010', 'INV-0002', 'INV-0001', 'INV-0100', 'INV-0011'].sort(compareNatural);
+    const sorted = ['INV-0010', 'INV-0002', 'INV-0001', 'INV-0100', 'INV-0011'].sort(
+      compareNatural,
+    );
     expect(sorted).toEqual(['INV-0001', 'INV-0002', 'INV-0010', 'INV-0011', 'INV-0100']);
   });
 });
@@ -239,8 +241,12 @@ describe('formatAddress', () => {
     expect(formatAddress({})).toEqual([]);
     expect(formatAddress({ city: 'Springfield' })).toEqual(['Springfield']);
     expect(formatAddress({ postalCode: '62701' })).toEqual(['62701']);
-    expect(formatAddress({ city: 'Springfield', postalCode: '62701' })).toEqual(['Springfield 62701']);
+    expect(formatAddress({ city: 'Springfield', postalCode: '62701' })).toEqual([
+      'Springfield 62701',
+    ]);
     expect(formatAddress({ region: 'IL', postalCode: '62701' })).toEqual(['IL 62701']);
-    expect(formatAddress({ addressLine1: '  ', addressLine2: ' Flat 1 ', country: ' UK ' })).toEqual(['Flat 1', 'UK']);
+    expect(
+      formatAddress({ addressLine1: '  ', addressLine2: ' Flat 1 ', country: ' UK ' }),
+    ).toEqual(['Flat 1', 'UK']);
   });
 });

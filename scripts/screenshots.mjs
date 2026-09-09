@@ -53,7 +53,12 @@ const SHOTS = [
   { name: '06-invoices-draft', path: `/w/${SLUG}/invoices?status=draft` },
   { name: '06-invoice-new-step1', path: `/w/${SLUG}/invoices/new`, full: true },
   { name: '06-invoice-detail', path: `/w/${SLUG}/invoices/__INVOICE__`, full: true },
-  { name: '06-invoice-detail-mobile', path: `/w/${SLUG}/invoices/__INVOICE__`, viewport: MOBILE, full: true },
+  {
+    name: '06-invoice-detail-mobile',
+    path: `/w/${SLUG}/invoices/__INVOICE__`,
+    viewport: MOBILE,
+    full: true,
+  },
   { name: '06-invoice-print', path: `/w/${SLUG}/invoices/__INVOICE__/print`, full: true },
   { name: '06-invoice-from-time', path: `/w/${SLUG}/invoices/from-time`, full: true },
   { name: '07-payments', path: `/w/${SLUG}/payments` },
@@ -65,7 +70,11 @@ const SHOTS = [
   { name: '09-journal', path: `/w/${SLUG}/ledger/journal` },
   { name: '09-journal-entry', path: `/w/${SLUG}/ledger/journal/__JOURNAL__`, full: true },
   { name: '10-reports', path: `/w/${SLUG}/reports` },
-  { name: '10-report-profit-loss', path: `/w/${SLUG}/reports/profit-loss?from=2026-01-01&to=2026-06-30&compare=previous`, full: true },
+  {
+    name: '10-report-profit-loss',
+    path: `/w/${SLUG}/reports/profit-loss?from=2026-01-01&to=2026-06-30&compare=previous`,
+    full: true,
+  },
   { name: '10-report-balance-sheet', path: `/w/${SLUG}/reports/balance-sheet`, full: true },
   { name: '10-report-trial-balance', path: `/w/${SLUG}/reports/trial-balance`, full: true },
   { name: '10-report-ar-aging', path: `/w/${SLUG}/reports/ar-aging`, full: true },
@@ -153,7 +162,10 @@ async function apiGet(path, cookie) {
 }
 
 async function main() {
-  if (!existsSync(join(ROOT, 'apps/api/dist/server.js')) || !existsSync(join(ROOT, 'apps/web/dist/index.html'))) {
+  if (
+    !existsSync(join(ROOT, 'apps/api/dist/server.js')) ||
+    !existsSync(join(ROOT, 'apps/web/dist/index.html'))
+  ) {
     console.error('Build first: npm run build');
     process.exit(1);
   }
@@ -184,7 +196,11 @@ async function main() {
     const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH;
     const browser = await chromium.launch(executablePath ? { executablePath } : {});
     const [name, value] = cookie.split('=');
-    const context = await browser.newContext({ viewport: DESKTOP, deviceScaleFactor: 1, colorScheme: 'light' });
+    const context = await browser.newContext({
+      viewport: DESKTOP,
+      deviceScaleFactor: 1,
+      colorScheme: 'light',
+    });
     await context.addCookies([{ name, value, domain: '127.0.0.1', path: '/' }]);
     const page = await context.newPage();
 

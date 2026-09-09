@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { ExpenseStatus, Role } from '../types';
-import { canTransitionExpense, EXPENSE_TRANSITIONS, expenseActions, isEditableExpense, isPostedExpense } from './status';
+import {
+  canTransitionExpense,
+  EXPENSE_TRANSITIONS,
+  expenseActions,
+  isEditableExpense,
+  isPostedExpense,
+} from './status';
 
 const ALL: ExpenseStatus[] = ['draft', 'pending_approval', 'approved', 'paid', 'rejected'];
 
@@ -49,8 +55,12 @@ describe('EXPENSE_TRANSITIONS', () => {
 });
 
 describe('expenseActions', () => {
-  const actions = (status: ExpenseStatus, role: Role | null, isCreator: boolean, requireExpenseApproval = true) =>
-    expenseActions({ status, role, settings: { requireExpenseApproval }, isCreator });
+  const actions = (
+    status: ExpenseStatus,
+    role: Role | null,
+    isCreator: boolean,
+    requireExpenseApproval = true,
+  ) => expenseActions({ status, role, settings: { requireExpenseApproval }, isCreator });
 
   describe('draft', () => {
     it('lets the creating member edit, delete and submit', () => {
@@ -64,7 +74,12 @@ describe('expenseActions', () => {
     });
 
     it('lets approvers edit anyone’s draft and approve it', () => {
-      expect(actions('draft', 'accountant', false)).toEqual(['edit', 'delete', 'submit', 'approve']);
+      expect(actions('draft', 'accountant', false)).toEqual([
+        'edit',
+        'delete',
+        'submit',
+        'approve',
+      ]);
       expect(actions('draft', 'accountant', false, false)).toEqual(['edit', 'delete', 'approve']);
       expect(actions('draft', 'owner', true)).toEqual(['edit', 'delete', 'submit', 'approve']);
       expect(actions('draft', 'admin', false)).toEqual(actions('draft', 'accountant', false));

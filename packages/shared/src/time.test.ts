@@ -125,8 +125,16 @@ describe('groupTimeByDay / sumMinutes', () => {
   it('groups entries by date preserving first-seen order', () => {
     const map = groupTimeByDay(entries);
     expect([...map.keys()]).toEqual(['2024-06-03', '2024-06-04']);
-    expect(map.get('2024-06-03')).toEqual({ minutes: 105, billableMinutes: 75, entries: [entries[0], entries[1], entries[3]] });
-    expect(map.get('2024-06-04')).toEqual({ minutes: 45, billableMinutes: 45, entries: [entries[2]] });
+    expect(map.get('2024-06-03')).toEqual({
+      minutes: 105,
+      billableMinutes: 75,
+      entries: [entries[0], entries[1], entries[3]],
+    });
+    expect(map.get('2024-06-04')).toEqual({
+      minutes: 45,
+      billableMinutes: 45,
+      entries: [entries[2]],
+    });
   });
 
   it('returns an empty map for no entries', () => {

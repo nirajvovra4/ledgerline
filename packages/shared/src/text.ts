@@ -78,7 +78,10 @@ export function isBlank(value: string | null | undefined): boolean {
 }
 
 export function joinNonEmpty(parts: Array<string | null | undefined>, separator = ', '): string {
-  return parts.filter((p): p is string => !isBlank(p)).map((p) => p.trim()).join(separator);
+  return parts
+    .filter((p): p is string => !isBlank(p))
+    .map((p) => p.trim())
+    .join(separator);
 }
 
 /** Case-insensitive substring match across several fields, used by client-side filters. */

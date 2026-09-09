@@ -11,6 +11,11 @@ export function parseInvoiceNumber(value: string): { prefix: string; n: number }
 }
 
 /** Preview of the next few numbers, used on the settings screen. */
-export function previewInvoiceNumbers(prefix: string, next: number, padding: number, count = 3): string[] {
+export function previewInvoiceNumbers(
+  prefix: string,
+  next: number,
+  padding: number,
+  count = 3,
+): string[] {
   return Array.from({ length: count }, (_, i) => formatInvoiceNumber(prefix, next + i, padding));
 }

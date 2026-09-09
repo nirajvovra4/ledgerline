@@ -1,12 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { hashString, isUuid, randomToken, SeededRandom, seededUuid, UUID_RE, uuidFromLabel } from './ids';
+import {
+  hashString,
+  isUuid,
+  randomToken,
+  SeededRandom,
+  seededUuid,
+  UUID_RE,
+  uuidFromLabel,
+} from './ids';
 
 const draw = (rng: SeededRandom, n: number) => Array.from({ length: n }, () => rng.next());
 
 describe('SeededRandom', () => {
   it('produces the same sequence for the same seed', () => {
     expect(draw(new SeededRandom(42), 10)).toEqual(draw(new SeededRandom(42), 10));
-    expect(draw(new SeededRandom('northlight'), 10)).toEqual(draw(new SeededRandom('northlight'), 10));
+    expect(draw(new SeededRandom('northlight'), 10)).toEqual(
+      draw(new SeededRandom('northlight'), 10),
+    );
   });
 
   it('produces different sequences for different seeds', () => {

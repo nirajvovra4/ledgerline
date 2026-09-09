@@ -8,11 +8,29 @@ import type { IsoDate, IsoDateTime } from './types';
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 export const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 export const MONTH_SHORT = MONTH_NAMES.map((m) => m.slice(0, 3));
-export const WEEKDAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+export const WEEKDAY_NAMES = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
 export const WEEKDAY_SHORT = WEEKDAY_NAMES.map((d) => d.slice(0, 3));
 
 export function isIsoDate(value: unknown): value is IsoDate {
@@ -171,7 +189,10 @@ export interface DateRange {
 }
 
 export function monthRange(year: number, month: number): DateRange {
-  return { from: makeIsoDate(year, month, 1), to: makeIsoDate(year, month, daysInMonth(year, month)) };
+  return {
+    from: makeIsoDate(year, month, 1),
+    to: makeIsoDate(year, month, daysInMonth(year, month)),
+  };
 }
 
 export function rangeForPeriod(today: IsoDate, period: 'month' | 'quarter' | 'year'): DateRange {
@@ -188,7 +209,11 @@ export function rangeForPeriod(today: IsoDate, period: 'month' | 'quarter' | 'ye
 /** The range immediately preceding `range`, with the same length in months where possible. */
 export function previousRange(range: DateRange): DateRange {
   const monthsSpan = monthsBetween(range.from, range.to);
-  if (monthsSpan > 0 && range.from === startOfMonth(range.from) && range.to === endOfMonth(range.to)) {
+  if (
+    monthsSpan > 0 &&
+    range.from === startOfMonth(range.from) &&
+    range.to === endOfMonth(range.to)
+  ) {
     const from = addMonths(range.from, -monthsSpan);
     return { from, to: endOfMonth(addMonths(from, monthsSpan - 1)) };
   }
@@ -219,7 +244,11 @@ export function splitByMonth(range: DateRange): Array<DateRange & { label: strin
   while (cursor <= range.to) {
     const end = minDate(endOfMonth(cursor), range.to);
     const { year, month } = dateParts(cursor);
-    out.push({ from: cursor, to: end, label: `${MONTH_SHORT[month - 1]} ${String(year).slice(2)}` });
+    out.push({
+      from: cursor,
+      to: end,
+      label: `${MONTH_SHORT[month - 1]} ${String(year).slice(2)}`,
+    });
     cursor = addDays(end, 1);
   }
   return out;

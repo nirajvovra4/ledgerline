@@ -42,7 +42,12 @@ describe('computeInvoiceTotals', () => {
   it('charges tax on the discounted net', () => {
     const t = computeInvoiceTotals([{ quantity: 1, unitPriceCents: 10000, taxRateBp: 2000 }], 5000);
     expect(t.discountCents).toBe(5000);
-    expect(t.lines[0]).toEqual({ grossCents: 10000, discountCents: 5000, lineTotalCents: 5000, taxCents: 1000 });
+    expect(t.lines[0]).toEqual({
+      grossCents: 10000,
+      discountCents: 5000,
+      lineTotalCents: 5000,
+      taxCents: 1000,
+    });
     expect(t.totalCents).toBe(6000);
   });
 
@@ -59,7 +64,9 @@ describe('computeInvoiceTotals', () => {
     expect(t.lines.map((l) => l.discountCents)).toEqual([333, 333, 334]);
     expect(t.lines.map((l) => l.lineTotalCents)).toEqual([3000, 3000, 3000]);
     expect(t.lines.reduce((s, l) => s + l.discountCents, 0)).toBe(t.discountCents);
-    expect(t.lines.reduce((s, l) => s + l.lineTotalCents, 0)).toBe(t.subtotalCents - t.discountCents);
+    expect(t.lines.reduce((s, l) => s + l.lineTotalCents, 0)).toBe(
+      t.subtotalCents - t.discountCents,
+    );
   });
 
   it('keeps discount allocation exact for awkward amounts', () => {
@@ -76,7 +83,11 @@ describe('computeInvoiceTotals', () => {
     expect(t.lines.map((l) => l.discountCents)).toEqual([1, 1, 0]);
     expect(t.totalCents).toBe(1);
 
-    const lines = [7, 11, 13, 17, 19, 23, 29].map((p) => ({ quantity: 1, unitPriceCents: p * 101, taxRateBp: 2000 }));
+    const lines = [7, 11, 13, 17, 19, 23, 29].map((p) => ({
+      quantity: 1,
+      unitPriceCents: p * 101,
+      taxRateBp: 2000,
+    }));
     for (const bp of [1, 333, 1000, 1250, 3333, 9999]) {
       const r = computeInvoiceTotals(lines, bp);
       expect(r.lines.reduce((s, l) => s + l.discountCents, 0)).toBe(r.discountCents);
@@ -123,7 +134,13 @@ describe('computeInvoiceTotals', () => {
   });
 
   it('returns zeros for an empty invoice', () => {
-    expect(computeInvoiceTotals([], 1000)).toEqual({ lines: [], subtotalCents: 0, discountCents: 0, taxCents: 0, totalCents: 0 });
+    expect(computeInvoiceTotals([], 1000)).toEqual({
+      lines: [],
+      subtotalCents: 0,
+      discountCents: 0,
+      taxCents: 0,
+      totalCents: 0,
+    });
   });
 
   it('is deterministic', () => {

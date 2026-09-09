@@ -19,13 +19,7 @@ export type ProjectStatus = 'active' | 'on_hold' | 'completed' | 'archived';
 export type BillingType = 'hourly' | 'fixed';
 
 export type InvoiceStatus =
-  | 'draft'
-  | 'pending_approval'
-  | 'approved'
-  | 'sent'
-  | 'partially_paid'
-  | 'paid'
-  | 'void';
+  'draft' | 'pending_approval' | 'approved' | 'sent' | 'partially_paid' | 'paid' | 'void';
 
 /** Stored status plus the derived `overdue` state. */
 export type DerivedInvoiceStatus = InvoiceStatus | 'overdue';
@@ -55,12 +49,7 @@ export type SystemAccountKey =
   | 'other_expense';
 
 export type JournalSourceType =
-  | 'invoice'
-  | 'payment'
-  | 'expense'
-  | 'expense_payment'
-  | 'manual'
-  | 'reversal';
+  'invoice' | 'payment' | 'expense' | 'expense_payment' | 'manual' | 'reversal';
 
 export type ApprovalSubjectType = 'invoice' | 'expense';
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
@@ -680,8 +669,20 @@ export interface AgingReportDto {
 export interface TaxSummaryDto {
   from: IsoDate;
   to: IsoDate;
-  collected: Array<{ taxRateId: string | null; name: string; rateBp: BasisPoints; netCents: Cents; taxCents: Cents }>;
-  paid: Array<{ taxRateId: string | null; name: string; rateBp: BasisPoints; netCents: Cents; taxCents: Cents }>;
+  collected: Array<{
+    taxRateId: string | null;
+    name: string;
+    rateBp: BasisPoints;
+    netCents: Cents;
+    taxCents: Cents;
+  }>;
+  paid: Array<{
+    taxRateId: string | null;
+    name: string;
+    rateBp: BasisPoints;
+    netCents: Cents;
+    taxCents: Cents;
+  }>;
   collectedCents: Cents;
   paidCents: Cents;
   netPayableCents: Cents;

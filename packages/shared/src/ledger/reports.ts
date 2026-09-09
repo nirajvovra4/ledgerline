@@ -30,7 +30,12 @@ export function naturalBalance(type: AccountType, debitCents: Cents, creditCents
   return DEBIT_NORMAL_TYPES.has(type) ? debitCents - creditCents : creditCents - debitCents;
 }
 
-export function accountBalance(account: AccountLike, lines: LedgerLineLike[], from?: IsoDate | null, to?: IsoDate | null): Cents {
+export function accountBalance(
+  account: AccountLike,
+  lines: LedgerLineLike[],
+  from?: IsoDate | null,
+  to?: IsoDate | null,
+): Cents {
   let debit = 0;
   let credit = 0;
   for (const l of lines) {
@@ -44,7 +49,11 @@ export function accountBalance(account: AccountLike, lines: LedgerLineLike[], fr
 }
 
 /** Sum debits/credits per account within an optional range. */
-export function totalsByAccount(lines: LedgerLineLike[], from?: IsoDate | null, to?: IsoDate | null): Map<string, { debitCents: Cents; creditCents: Cents }> {
+export function totalsByAccount(
+  lines: LedgerLineLike[],
+  from?: IsoDate | null,
+  to?: IsoDate | null,
+): Map<string, { debitCents: Cents; creditCents: Cents }> {
   const map = new Map<string, { debitCents: Cents; creditCents: Cents }>();
   for (const l of lines) {
     if (from && l.date < from) continue;
@@ -71,7 +80,9 @@ function sectionFor(
   const lines: ReportLine[] = [];
   let totalCents = 0;
   let previousTotalCents = 0;
-  for (const a of accounts.filter((x) => x.type === type).sort((x, y) => x.code.localeCompare(y.code))) {
+  for (const a of accounts
+    .filter((x) => x.type === type)
+    .sort((x, y) => x.code.localeCompare(y.code))) {
     const t = current.get(a.id) ?? { debitCents: 0, creditCents: 0 };
     const amount = naturalBalance(type, t.debitCents, t.creditCents);
     const p = previous?.get(a.id);
@@ -99,7 +110,9 @@ export function buildProfitAndLoss(
   const revenue = sectionFor('revenue', 'Revenue', accounts, 'revenue', current, previous);
   const expenses = sectionFor('expenses', 'Expenses', accounts, 'expense', current, previous);
   const netIncomeCents = revenue.totalCents - expenses.totalCents;
-  const previousNetIncomeCents = compare ? (revenue.previousTotalCents ?? 0) - (expenses.previousTotalCents ?? 0) : null;
+  const previousNetIncomeCents = compare
+    ? (revenue.previousTotalCents ?? 0) - (expenses.previousTotalCents ?? 0)
+    : null;
   return {
     from: range.from,
     to: range.to,
@@ -113,7 +126,11 @@ export function buildProfitAndLoss(
   };
 }
 
-export function buildBalanceSheet(lines: LedgerLineLike[], accounts: AccountLike[], asOf: IsoDate): BalanceSheetDto {
+export function buildBalanceSheet(
+  lines: LedgerLineLike[],
+  accounts: AccountLike[],
+  asOf: IsoDate,
+): BalanceSheetDto {
   const cumulative = totalsByAccount(lines, null, asOf);
   const assets = sectionFor('assets', 'Assets', accounts, 'asset', cumulative);
   const liabilities = sectionFor('liabilities', 'Liabilities', accounts, 'liability', cumulative);
@@ -123,7 +140,8 @@ export function buildBalanceSheet(lines: LedgerLineLike[], accounts: AccountLike
   const expenses = sectionFor('e', 'e', accounts, 'expense', cumulative);
   const currentEarningsCents = revenue.totalCents - expenses.totalCents;
   const totalAssetsCents = assets.totalCents;
-  const totalLiabilitiesAndEquityCents = liabilities.totalCents + equity.totalCents + currentEarningsCents;
+  const totalLiabilitiesAndEquityCents =
+    liabilities.totalCents + equity.totalCents + currentEarningsCents;
   return {
     asOf,
     assets,
@@ -136,7 +154,11 @@ export function buildBalanceSheet(lines: LedgerLineLike[], accounts: AccountLike
   };
 }
 
-export function buildTrialBalance(lines: LedgerLineLike[], accounts: AccountLike[], asOf: IsoDate): TrialBalanceDto {
+export function buildTrialBalance(
+  lines: LedgerLineLike[],
+  accounts: AccountLike[],
+  asOf: IsoDate,
+): TrialBalanceDto {
   const cumulative = totalsByAccount(lines, null, asOf);
   const rows = accounts
     .slice()
@@ -156,7 +178,13 @@ export function buildTrialBalance(lines: LedgerLineLike[], accounts: AccountLike
     .filter((r) => r.debitCents !== 0 || r.creditCents !== 0);
   const totalDebitCents = rows.reduce((s, r) => s + r.debitCents, 0);
   const totalCreditCents = rows.reduce((s, r) => s + r.creditCents, 0);
-  return { asOf, rows, totalDebitCents, totalCreditCents, balanced: totalDebitCents === totalCreditCents };
+  return {
+    asOf,
+    rows,
+    totalDebitCents,
+    totalCreditCents,
+    balanced: totalDebitCents === totalCreditCents,
+  };
 }
 
 /** Arrange flat accounts into a tree ordered by code, rolling balances up to parents. */
@@ -182,7 +210,10 @@ export function buildAccountTree(accounts: AccountDto[]): AccountNode[] {
   return roots;
 }
 
-export function flattenTree(nodes: AccountNode[], depth = 0): Array<AccountNode & { depth: number }> {
+export function flattenTree(
+  nodes: AccountNode[],
+  depth = 0,
+): Array<AccountNode & { depth: number }> {
   const out: Array<AccountNode & { depth: number }> = [];
   for (const n of nodes) {
     out.push({ ...n, depth });

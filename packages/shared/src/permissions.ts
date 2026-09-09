@@ -57,7 +57,12 @@ const ACCOUNTANT: Permission[] = [
   'reports.view',
 ];
 
-const MEMBER: Permission[] = ['clients.view', 'time.manage_own', 'invoices.create', 'expenses.create'];
+const MEMBER: Permission[] = [
+  'clients.view',
+  'time.manage_own',
+  'invoices.create',
+  'expenses.create',
+];
 
 export const ROLE_PERMISSIONS: Record<Role, ReadonlySet<Permission>> = {
   owner: new Set(ALL_PERMISSIONS),

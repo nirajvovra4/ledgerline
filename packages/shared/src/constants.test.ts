@@ -47,12 +47,44 @@ describe('labelFor / toneFor', () => {
 describe('option lists', () => {
   it('cover every enum value exactly once', () => {
     expect(ROLES.map((r) => r.value)).toEqual(['owner', 'admin', 'accountant', 'member']);
-    expect(INVOICE_STATUSES.map((s) => s.value)).toEqual(['draft', 'pending_approval', 'approved', 'sent', 'partially_paid', 'paid', 'overdue', 'void']);
-    expect(EXPENSE_STATUSES.map((s) => s.value)).toEqual(['draft', 'pending_approval', 'approved', 'paid', 'rejected']);
-    expect(PROJECT_STATUSES.map((s) => s.value)).toEqual(['active', 'on_hold', 'completed', 'archived']);
+    expect(INVOICE_STATUSES.map((s) => s.value)).toEqual([
+      'draft',
+      'pending_approval',
+      'approved',
+      'sent',
+      'partially_paid',
+      'paid',
+      'overdue',
+      'void',
+    ]);
+    expect(EXPENSE_STATUSES.map((s) => s.value)).toEqual([
+      'draft',
+      'pending_approval',
+      'approved',
+      'paid',
+      'rejected',
+    ]);
+    expect(PROJECT_STATUSES.map((s) => s.value)).toEqual([
+      'active',
+      'on_hold',
+      'completed',
+      'archived',
+    ]);
     expect(APPROVAL_STATUSES.map((s) => s.value)).toEqual(['pending', 'approved', 'rejected']);
-    expect(PAYMENT_METHODS.map((s) => s.value)).toEqual(['bank_transfer', 'card', 'cash', 'cheque', 'other']);
-    expect(ACCOUNT_TYPES.map((s) => s.value)).toEqual(['asset', 'liability', 'equity', 'revenue', 'expense']);
+    expect(PAYMENT_METHODS.map((s) => s.value)).toEqual([
+      'bank_transfer',
+      'card',
+      'cash',
+      'cheque',
+      'other',
+    ]);
+    expect(ACCOUNT_TYPES.map((s) => s.value)).toEqual([
+      'asset',
+      'liability',
+      'equity',
+      'revenue',
+      'expense',
+    ]);
     expect(NOTIFICATION_KINDS.map((s) => s.value)).toEqual([
       'approval_requested',
       'approval_decided',
@@ -66,7 +98,16 @@ describe('option lists', () => {
   });
 
   it('give every option a non-empty label', () => {
-    for (const list of [ROLES, INVOICE_STATUSES, EXPENSE_STATUSES, PROJECT_STATUSES, APPROVAL_STATUSES, PAYMENT_METHODS, ACCOUNT_TYPES, NOTIFICATION_KINDS]) {
+    for (const list of [
+      ROLES,
+      INVOICE_STATUSES,
+      EXPENSE_STATUSES,
+      PROJECT_STATUSES,
+      APPROVAL_STATUSES,
+      PAYMENT_METHODS,
+      ACCOUNT_TYPES,
+      NOTIFICATION_KINDS,
+    ]) {
       for (const o of list) expect(o.label.length).toBeGreaterThan(0);
     }
   });
@@ -78,7 +119,12 @@ describe('option lists', () => {
 
 describe('currencies', () => {
   it('returns known currency info', () => {
-    expect(currencyInfo('USD')).toEqual({ code: 'USD', name: 'US Dollar', symbol: '$', decimals: 2 });
+    expect(currencyInfo('USD')).toEqual({
+      code: 'USD',
+      name: 'US Dollar',
+      symbol: '$',
+      decimals: 2,
+    });
     expect(currencyInfo('JPY')).toMatchObject({ symbol: '¥', decimals: 0 });
     expect(currencyInfo('CHF')).toMatchObject({ symbol: 'CHF', decimals: 2 });
   });
@@ -130,7 +176,13 @@ describe('SYSTEM_ACCOUNTS', () => {
   });
 
   it('uses numeric codes whose leading digit matches the account type', () => {
-    const leading: Record<AccountType, string> = { asset: '1', liability: '2', equity: '3', revenue: '4', expense: '5' };
+    const leading: Record<AccountType, string> = {
+      asset: '1',
+      liability: '2',
+      equity: '3',
+      revenue: '4',
+      expense: '5',
+    };
     for (const a of SYSTEM_ACCOUNTS) {
       expect(a.code).toMatch(/^\d{4}$/);
       expect(a.code[0]).toBe(leading[a.type]);
@@ -141,7 +193,13 @@ describe('SYSTEM_ACCOUNTS', () => {
 
 describe('aging buckets and misc constants', () => {
   it('defines contiguous aging buckets in order', () => {
-    expect(AGING_BUCKETS.map((b) => b.key)).toEqual(['current', 'd1_30', 'd31_60', 'd61_90', 'd90_plus']);
+    expect(AGING_BUCKETS.map((b) => b.key)).toEqual([
+      'current',
+      'd1_30',
+      'd31_60',
+      'd61_90',
+      'd90_plus',
+    ]);
     expect(AGING_BUCKETS[0]).toMatchObject({ minDays: -Infinity, maxDays: 0 });
     expect(AGING_BUCKETS[AGING_BUCKETS.length - 1]).toMatchObject({ minDays: 91, maxDays: null });
     for (let i = 1; i < AGING_BUCKETS.length; i++) {

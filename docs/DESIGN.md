@@ -39,26 +39,26 @@ Conventions:
 
 ### Users & workspaces
 
-| Entity      | Fields                                                                                                        |
-| ----------- | ------------------------------------------------------------------------------------------------------------- |
-| User        | id, email, name, passwordHash, createdAt                                                                      |
-| Session     | id (token), userId, expiresAt, createdAt                                                                      |
-| Workspace   | id, name, slug, currency (ISO 4217), settings (JSON, see WorkspaceSettings), createdAt                        |
-| Membership  | workspaceId, userId, role (`owner` \| `admin` \| `accountant` \| `member`), createdAt                          |
-| Invite      | id, workspaceId, email, role, token, invitedBy, acceptedAt?, createdAt                                        |
+| Entity     | Fields                                                                                 |
+| ---------- | -------------------------------------------------------------------------------------- |
+| User       | id, email, name, passwordHash, createdAt                                               |
+| Session    | id (token), userId, expiresAt, createdAt                                               |
+| Workspace  | id, name, slug, currency (ISO 4217), settings (JSON, see WorkspaceSettings), createdAt |
+| Membership | workspaceId, userId, role (`owner` \| `admin` \| `accountant` \| `member`), createdAt  |
+| Invite     | id, workspaceId, email, role, token, invitedBy, acceptedAt?, createdAt                 |
 
 `WorkspaceSettings`:
 
 ```ts
 {
-  invoicePrefix: string;          // "INV"
-  nextInvoiceNumber: number;      // 1042
-  invoiceNumberPadding: number;   // 4  -> INV-1042
-  defaultPaymentTermsDays: number;// 30
+  invoicePrefix: string; // "INV"
+  nextInvoiceNumber: number; // 1042
+  invoiceNumberPadding: number; // 4  -> INV-1042
+  defaultPaymentTermsDays: number; // 30
   defaultTaxRateId: string | null;
   requireInvoiceApproval: boolean;
   requireExpenseApproval: boolean;
-  fiscalYearStartMonth: number;   // 1..12
+  fiscalYearStartMonth: number; // 1..12
   invoiceFooter: string;
   address: string;
   email: string;
@@ -68,20 +68,20 @@ Conventions:
 
 ### Clients, projects, time
 
-| Entity     | Fields                                                                                                                                     |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Client     | id, workspaceId, name, company, email, phone, addressLine1, addressLine2, city, region, postalCode, country, taxId, paymentTermsDays, notes, status (`active` \| `archived`), createdAt, updatedAt |
-| Project    | id, workspaceId, clientId, name, code, description, status (`active` \| `on_hold` \| `completed` \| `archived`), billingType (`hourly` \| `fixed`), hourlyRateCents, budgetCents, startDate?, endDate?, createdAt, updatedAt |
-| TimeEntry  | id, workspaceId, projectId, userId, date, minutes, description, billable, invoiceLineId?, createdAt, updatedAt                              |
+| Entity    | Fields                                                                                                                                                                                                                       |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Client    | id, workspaceId, name, company, email, phone, addressLine1, addressLine2, city, region, postalCode, country, taxId, paymentTermsDays, notes, status (`active` \| `archived`), createdAt, updatedAt                           |
+| Project   | id, workspaceId, clientId, name, code, description, status (`active` \| `on_hold` \| `completed` \| `archived`), billingType (`hourly` \| `fixed`), hourlyRateCents, budgetCents, startDate?, endDate?, createdAt, updatedAt |
+| TimeEntry | id, workspaceId, projectId, userId, date, minutes, description, billable, invoiceLineId?, createdAt, updatedAt                                                                                                               |
 
 ### Invoicing
 
-| Entity      | Fields                                                                                                                                                       |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| TaxRate     | id, workspaceId, name, rateBp, isDefault, archived                                                                                                           |
+| Entity      | Fields                                                                                                                                                                                                                                                                                   |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TaxRate     | id, workspaceId, name, rateBp, isDefault, archived                                                                                                                                                                                                                                       |
 | Invoice     | id, workspaceId, clientId, projectId?, number, status, issueDate, dueDate, currency, discountBp, subtotalCents, discountCents, taxCents, totalCents, amountPaidCents, notes, terms, poNumber, sentAt?, approvedAt?, approvedBy?, voidedAt?, voidReason?, createdBy, createdAt, updatedAt |
-| InvoiceLine | id, invoiceId, position, description, quantity (number, up to 2 decimals), unitPriceCents, taxRateId?, accountId (revenue account), lineTotalCents, taxCents |
-| Payment     | id, workspaceId, invoiceId, date, amountCents, method (`bank_transfer` \| `card` \| `cash` \| `cheque` \| `other`), reference, note, journalEntryId?, createdBy, createdAt |
+| InvoiceLine | id, invoiceId, position, description, quantity (number, up to 2 decimals), unitPriceCents, taxRateId?, accountId (revenue account), lineTotalCents, taxCents                                                                                                                             |
+| Payment     | id, workspaceId, invoiceId, date, amountCents, method (`bank_transfer` \| `card` \| `cash` \| `cheque` \| `other`), reference, note, journalEntryId?, createdBy, createdAt                                                                                                               |
 
 Invoice status: `draft` → `pending_approval` → `approved` → `sent` → `partially_paid` → `paid`.
 `void` is reachable from any status except `paid`. `rejected` returns to `draft` with a comment.
@@ -89,17 +89,17 @@ Invoice status: `draft` → `pending_approval` → `approved` → `sent` → `pa
 
 ### Expenses
 
-| Entity  | Fields                                                                                                                                                        |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Entity  | Fields                                                                                                                                                                                                                                                                                                                            |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Expense | id, workspaceId, vendor, description, date, dueDate?, accountId (expense account), amountCents (net), taxRateId?, taxCents, totalCents, status (`draft` \| `pending_approval` \| `approved` \| `paid` \| `rejected`), clientId?, projectId?, billable, paidAt?, paymentMethod?, reference, notes, createdBy, createdAt, updatedAt |
 
 ### Ledger
 
-| Entity       | Fields                                                                                                                              |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Account      | id, workspaceId, code (string, "1200"), name, type (`asset` \| `liability` \| `equity` \| `revenue` \| `expense`), parentId?, isSystem, systemKey?, archived, description |
+| Entity       | Fields                                                                                                                                                                                      |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Account      | id, workspaceId, code (string, "1200"), name, type (`asset` \| `liability` \| `equity` \| `revenue` \| `expense`), parentId?, isSystem, systemKey?, archived, description                   |
 | JournalEntry | id, workspaceId, entryNumber, date, memo, sourceType (`invoice` \| `payment` \| `expense` \| `expense_payment` \| `manual` \| `reversal`), sourceId?, reversedEntryId?, postedBy, createdAt |
-| JournalLine  | id, entryId, accountId, debitCents, creditCents, description                                                                         |
+| JournalLine  | id, entryId, accountId, debitCents, creditCents, description                                                                                                                                |
 
 System accounts (created for every workspace; `systemKey` values):
 
@@ -124,22 +124,22 @@ System accounts (created for every workspace; `systemKey` values):
 
 Posting rules (implemented in `shared/ledger/postings.ts`, applied by the API):
 
-| Event                  | Debit                                           | Credit                                            |
-| ---------------------- | ----------------------------------------------- | ------------------------------------------------- |
-| Invoice approved       | AR: total                                       | each line's revenue account: lineTotal − discount share; Sales Tax Payable: tax |
-| Payment recorded       | Cash: amount                                    | AR: amount                                        |
-| Invoice voided         | reversal of the approval entry (and payment entries stay; voiding a paid invoice is forbidden) |
-| Expense approved       | expense account: net; Input Tax: tax            | AP: total                                         |
-| Expense paid           | AP: total                                       | Cash: total                                       |
-| Manual entry           | as entered; must balance                        |                                                   |
+| Event            | Debit                                                                                          | Credit                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Invoice approved | AR: total                                                                                      | each line's revenue account: lineTotal − discount share; Sales Tax Payable: tax |
+| Payment recorded | Cash: amount                                                                                   | AR: amount                                                                      |
+| Invoice voided   | reversal of the approval entry (and payment entries stay; voiding a paid invoice is forbidden) |
+| Expense approved | expense account: net; Input Tax: tax                                                           | AP: total                                                                       |
+| Expense paid     | AP: total                                                                                      | Cash: total                                                                     |
+| Manual entry     | as entered; must balance                                                                       |                                                                                 |
 
 ### Workflow, notifications, activity
 
-| Entity       | Fields                                                                                                                                         |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Entity       | Fields                                                                                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Approval     | id, workspaceId, subjectType (`invoice` \| `expense`), subjectId, requestedBy, status (`pending` \| `approved` \| `rejected`), decidedBy?, comment, createdAt, decidedAt? |
-| Notification | id, workspaceId, userId, kind, title, body, link, readAt?, createdAt                                                                            |
-| Activity     | id, workspaceId, actorId, entityType, entityId, action, summary, meta (JSON), createdAt                                                        |
+| Notification | id, workspaceId, userId, kind, title, body, link, readAt?, createdAt                                                                                                      |
+| Activity     | id, workspaceId, actorId, entityType, entityId, action, summary, meta (JSON), createdAt                                                                                   |
 
 Notification kinds: `approval_requested`, `approval_decided`, `invoice_sent`, `payment_received`,
 `invoice_overdue`, `member_joined`, `mention`, `system`.
@@ -178,7 +178,7 @@ Exports (all from `src/index.ts`):
   `MemberDto`, `ClientDto`, `ClientStats`, `ProjectDto`, `ProjectStats`, `TimeEntryDto`,
   `InvoiceDto`, `InvoiceDetailDto`, `InvoiceLineDto`, `PaymentDto`, `ExpenseDto`, `AccountDto`,
   `AccountNode`, `JournalEntryDto`, `JournalLineDto`, `ApprovalDto`, `NotificationDto`,
-  `ActivityDto`, `DashboardDto`, report DTOs, `Paginated<T>`, `ApiError`.
+  `ActivityDto`, `DashboardDto`, report DTOs, `Paginated<T>`, `ApiErrorBody`.
 - `schemas.ts` — Zod schemas for every request body / query: `registerSchema`, `loginSchema`,
   `createWorkspaceSchema`, `updateWorkspaceSettingsSchema`, `inviteMemberSchema`, `clientInputSchema`,
   `projectInputSchema`, `timeEntryInputSchema`, `taxRateInputSchema`, `invoiceInputSchema`,
@@ -222,78 +222,78 @@ shared DTOs. Services (`src/services/*.ts`) hold business logic; routes stay thi
 
 ### Meta & auth
 
-| Method | Path                    | Body / query              | Response                                     |
-| ------ | ----------------------- | ------------------------- | -------------------------------------------- |
-| GET    | /api/meta               |                           | `{ today: IsoDate, version: string, fixedClock: boolean }` |
-| POST   | /api/auth/register      | registerSchema            | `{ user: UserDto }`                          |
-| POST   | /api/auth/login         | loginSchema               | `{ user: UserDto }`                          |
-| POST   | /api/auth/logout        |                           | `{ ok: true }`                               |
-| GET    | /api/auth/me            |                           | `{ user: UserDto, workspaces: WorkspaceSummary[] }` |
-| PATCH  | /api/auth/me            | updateProfileSchema       | `{ user: UserDto }`                          |
-| POST   | /api/auth/password      | changePasswordSchema      | `{ ok: true }`                               |
-| POST   | /api/invites/:token/accept |                        | `{ workspace: WorkspaceSummary }`            |
+| Method | Path                       | Body / query         | Response                                                   |
+| ------ | -------------------------- | -------------------- | ---------------------------------------------------------- |
+| GET    | /api/meta                  |                      | `{ today: IsoDate, version: string, fixedClock: boolean }` |
+| POST   | /api/auth/register         | registerSchema       | `{ user: UserDto }`                                        |
+| POST   | /api/auth/login            | loginSchema          | `{ user: UserDto }`                                        |
+| POST   | /api/auth/logout           |                      | `{ ok: true }`                                             |
+| GET    | /api/auth/me               |                      | `{ user: UserDto, workspaces: WorkspaceSummary[] }`        |
+| PATCH  | /api/auth/me               | updateProfileSchema  | `{ user: UserDto }`                                        |
+| POST   | /api/auth/password         | changePasswordSchema | `{ ok: true }`                                             |
+| POST   | /api/invites/:token/accept |                      | `{ workspace: WorkspaceSummary }`                          |
 
 ### Workspaces
 
-| Method | Path                                | Body / query                  | Response                         |
-| ------ | ----------------------------------- | ----------------------------- | -------------------------------- |
-| GET    | /api/workspaces                     |                               | `{ items: WorkspaceSummary[] }`  |
-| POST   | /api/workspaces                     | createWorkspaceSchema         | `{ workspace: WorkspaceDto }`    |
-| GET    | /api/w/:slug                        |                               | `{ workspace: WorkspaceDto, role }` |
-| PATCH  | /api/w/:slug                        | updateWorkspaceSchema         | `{ workspace: WorkspaceDto }`    |
-| GET    | /api/w/:slug/members                |                               | `{ items: MemberDto[], invites: InviteDto[] }` |
-| POST   | /api/w/:slug/members/invite         | inviteMemberSchema            | `{ invite: InviteDto }`          |
-| PATCH  | /api/w/:slug/members/:userId        | `{ role }`                    | `{ member: MemberDto }`          |
-| DELETE | /api/w/:slug/members/:userId        |                               | `{ ok: true }`                   |
-| DELETE | /api/w/:slug/invites/:inviteId      |                               | `{ ok: true }`                   |
-| GET    | /api/w/:slug/dashboard              | `?range=month|quarter|year`   | `DashboardDto`                   |
-| GET    | /api/w/:slug/activity               | `?limit&before`               | `{ items: ActivityDto[] }`       |
-| GET    | /api/w/:slug/search                 | `?q`                          | `{ clients, projects, invoices, expenses }` (each an array of `SearchHit`) |
-| GET    | /api/w/:slug/calendar               | `?month=YYYY-MM`              | `{ events: CalendarEvent[] }`    |
+| Method | Path                           | Body / query          | Response                                                                   |
+| ------ | ------------------------------ | --------------------- | -------------------------------------------------------------------------- |
+| GET    | /api/workspaces                |                       | `{ items: WorkspaceSummary[] }`                                            |
+| POST   | /api/workspaces                | createWorkspaceSchema | `{ workspace: WorkspaceDto }`                                              |
+| GET    | /api/w/:slug                   |                       | `{ workspace: WorkspaceDto, role }`                                        |
+| PATCH  | /api/w/:slug                   | updateWorkspaceSchema | `{ workspace: WorkspaceDto }`                                              |
+| GET    | /api/w/:slug/members           |                       | `{ items: MemberDto[], invites: InviteDto[] }`                             |
+| POST   | /api/w/:slug/members/invite    | inviteMemberSchema    | `{ invite: InviteDto }`                                                    |
+| PATCH  | /api/w/:slug/members/:userId   | `{ role }`            | `{ member: MemberDto }`                                                    |
+| DELETE | /api/w/:slug/members/:userId   |                       | `{ ok: true }`                                                             |
+| DELETE | /api/w/:slug/invites/:inviteId |                       | `{ ok: true }`                                                             |
+| GET    | /api/w/:slug/dashboard         | `?range=month         | quarter                                                                    | year` | `DashboardDto` |
+| GET    | /api/w/:slug/activity          | `?limit&before`       | `{ items: ActivityDto[] }`                                                 |
+| GET    | /api/w/:slug/search            | `?q`                  | `{ clients, projects, invoices, expenses }` (each an array of `SearchHit`) |
+| GET    | /api/w/:slug/calendar          | `?month=YYYY-MM`      | `{ events: CalendarEvent[] }`                                              |
 
 ### Clients / projects / time
 
-| Method | Path                                   | Body / query                                               | Response                          |
-| ------ | -------------------------------------- | ---------------------------------------------------------- | --------------------------------- |
-| GET    | /api/w/:slug/clients                   | `?q&status&sort&dir&page&pageSize`                          | `Paginated<ClientDto>`            |
-| POST   | /api/w/:slug/clients                   | clientInputSchema                                          | `{ client: ClientDto }`           |
-| GET    | /api/w/:slug/clients/:id               |                                                            | `{ client: ClientDto, stats: ClientStats, projects: ProjectDto[], invoices: InvoiceDto[] }` |
-| PATCH  | /api/w/:slug/clients/:id               | clientInputSchema.partial()                                | `{ client }`                      |
-| DELETE | /api/w/:slug/clients/:id               |                                                            | archives → `{ client }`           |
-| GET    | /api/w/:slug/clients/:id/statement     | `?from&to`                                                 | `ClientStatementDto`              |
-| GET    | /api/w/:slug/projects                  | `?q&status&clientId&sort&dir&page&pageSize`                 | `Paginated<ProjectDto>`           |
-| POST   | /api/w/:slug/projects                  | projectInputSchema                                         | `{ project }`                     |
-| GET    | /api/w/:slug/projects/:id              |                                                            | `{ project, stats: ProjectStats, recentEntries: TimeEntryDto[] }` |
-| PATCH  | /api/w/:slug/projects/:id              | projectInputSchema.partial()                               | `{ project }`                     |
-| DELETE | /api/w/:slug/projects/:id              |                                                            | archives → `{ project }`          |
-| GET    | /api/w/:slug/time-entries              | `?projectId&userId&from&to&billable&uninvoiced&page&pageSize` | `Paginated<TimeEntryDto>`      |
-| POST   | /api/w/:slug/time-entries              | timeEntryInputSchema                                       | `{ entry }`                       |
-| PATCH  | /api/w/:slug/time-entries/:id          | partial                                                    | `{ entry }`                       |
-| DELETE | /api/w/:slug/time-entries/:id          |                                                            | `{ ok }`                          |
-| GET    | /api/w/:slug/time-entries/summary      | `?from&to`                                                 | `TimeSummaryDto` (per day, per project totals) |
+| Method | Path                               | Body / query                                                  | Response                                                                                    |
+| ------ | ---------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| GET    | /api/w/:slug/clients               | `?q&status&sort&dir&page&pageSize`                            | `Paginated<ClientDto>`                                                                      |
+| POST   | /api/w/:slug/clients               | clientInputSchema                                             | `{ client: ClientDto }`                                                                     |
+| GET    | /api/w/:slug/clients/:id           |                                                               | `{ client: ClientDto, stats: ClientStats, projects: ProjectDto[], invoices: InvoiceDto[] }` |
+| PATCH  | /api/w/:slug/clients/:id           | clientInputSchema.partial()                                   | `{ client }`                                                                                |
+| DELETE | /api/w/:slug/clients/:id           |                                                               | archives → `{ client }`                                                                     |
+| GET    | /api/w/:slug/clients/:id/statement | `?from&to`                                                    | `ClientStatementDto`                                                                        |
+| GET    | /api/w/:slug/projects              | `?q&status&clientId&sort&dir&page&pageSize`                   | `Paginated<ProjectDto>`                                                                     |
+| POST   | /api/w/:slug/projects              | projectInputSchema                                            | `{ project }`                                                                               |
+| GET    | /api/w/:slug/projects/:id          |                                                               | `{ project, stats: ProjectStats, recentEntries: TimeEntryDto[] }`                           |
+| PATCH  | /api/w/:slug/projects/:id          | projectInputSchema.partial()                                  | `{ project }`                                                                               |
+| DELETE | /api/w/:slug/projects/:id          |                                                               | archives → `{ project }`                                                                    |
+| GET    | /api/w/:slug/time-entries          | `?projectId&userId&from&to&billable&uninvoiced&page&pageSize` | `Paginated<TimeEntryDto>`                                                                   |
+| POST   | /api/w/:slug/time-entries          | timeEntryInputSchema                                          | `{ entry }`                                                                                 |
+| PATCH  | /api/w/:slug/time-entries/:id      | partial                                                       | `{ entry }`                                                                                 |
+| DELETE | /api/w/:slug/time-entries/:id      |                                                               | `{ ok }`                                                                                    |
+| GET    | /api/w/:slug/time-entries/summary  | `?from&to`                                                    | `TimeSummaryDto` (per day, per project totals)                                              |
 
 ### Invoicing
 
-| Method | Path                                        | Body / query                                       | Response                       |
-| ------ | ------------------------------------------- | -------------------------------------------------- | ------------------------------ |
-| GET    | /api/w/:slug/tax-rates                      |                                                    | `{ items: TaxRateDto[] }`      |
-| POST   | /api/w/:slug/tax-rates                      | taxRateInputSchema                                 | `{ taxRate }`                  |
-| PATCH  | /api/w/:slug/tax-rates/:id                  | partial                                            | `{ taxRate }`                  |
-| DELETE | /api/w/:slug/tax-rates/:id                  |                                                    | archives                       |
-| GET    | /api/w/:slug/invoices                       | `?q&status&clientId&from&to&sort&dir&page&pageSize` (status may be `overdue`) | `Paginated<InvoiceDto>` + `summary: { count, totalCents, outstandingCents, overdueCents }` |
-| POST   | /api/w/:slug/invoices                       | invoiceInputSchema                                 | `{ invoice: InvoiceDetailDto }`|
-| POST   | /api/w/:slug/invoices/from-time             | `{ clientId, projectId, entryIds[], groupBy: 'entry'|'day'|'project' }` | `{ invoice }` |
-| GET    | /api/w/:slug/invoices/:id                   |                                                    | `{ invoice: InvoiceDetailDto }`|
-| PATCH  | /api/w/:slug/invoices/:id                   | invoiceInputSchema (draft only)                    | `{ invoice }`                  |
-| DELETE | /api/w/:slug/invoices/:id                   | draft only                                         | `{ ok }`                       |
-| POST   | /api/w/:slug/invoices/:id/submit            |                                                    | `{ invoice }`                  |
-| POST   | /api/w/:slug/invoices/:id/approve           | `{ comment? }`                                     | `{ invoice }`                  |
-| POST   | /api/w/:slug/invoices/:id/reject            | `{ comment }`                                      | `{ invoice }`                  |
-| POST   | /api/w/:slug/invoices/:id/send              |                                                    | `{ invoice }`                  |
-| POST   | /api/w/:slug/invoices/:id/void              | `{ reason }`                                       | `{ invoice }`                  |
-| POST   | /api/w/:slug/invoices/:id/payments          | recordPaymentSchema                                | `{ invoice, payment }`         |
-| GET    | /api/w/:slug/payments                       | `?clientId&from&to&method&page&pageSize`            | `Paginated<PaymentDto>`        |
-| DELETE | /api/w/:slug/payments/:id                   | reverses the payment and its journal entry         | `{ ok }`                       |
+| Method | Path                               | Body / query                                                                  | Response                                                                                   |
+| ------ | ---------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| GET    | /api/w/:slug/tax-rates             |                                                                               | `{ items: TaxRateDto[] }`                                                                  |
+| POST   | /api/w/:slug/tax-rates             | taxRateInputSchema                                                            | `{ taxRate }`                                                                              |
+| PATCH  | /api/w/:slug/tax-rates/:id         | partial                                                                       | `{ taxRate }`                                                                              |
+| DELETE | /api/w/:slug/tax-rates/:id         |                                                                               | archives                                                                                   |
+| GET    | /api/w/:slug/invoices              | `?q&status&clientId&from&to&sort&dir&page&pageSize` (status may be `overdue`) | `Paginated<InvoiceDto>` + `summary: { count, totalCents, outstandingCents, overdueCents }` |
+| POST   | /api/w/:slug/invoices              | invoiceInputSchema                                                            | `{ invoice: InvoiceDetailDto }`                                                            |
+| POST   | /api/w/:slug/invoices/from-time    | `{ clientId, projectId, entryIds[], groupBy: 'entry'                          | 'day'                                                                                      | 'project' }` | `{ invoice }` |
+| GET    | /api/w/:slug/invoices/:id          |                                                                               | `{ invoice: InvoiceDetailDto }`                                                            |
+| PATCH  | /api/w/:slug/invoices/:id          | invoiceInputSchema (draft only)                                               | `{ invoice }`                                                                              |
+| DELETE | /api/w/:slug/invoices/:id          | draft only                                                                    | `{ ok }`                                                                                   |
+| POST   | /api/w/:slug/invoices/:id/submit   |                                                                               | `{ invoice }`                                                                              |
+| POST   | /api/w/:slug/invoices/:id/approve  | `{ comment? }`                                                                | `{ invoice }`                                                                              |
+| POST   | /api/w/:slug/invoices/:id/reject   | `{ comment }`                                                                 | `{ invoice }`                                                                              |
+| POST   | /api/w/:slug/invoices/:id/send     |                                                                               | `{ invoice }`                                                                              |
+| POST   | /api/w/:slug/invoices/:id/void     | `{ reason }`                                                                  | `{ invoice }`                                                                              |
+| POST   | /api/w/:slug/invoices/:id/payments | recordPaymentSchema                                                           | `{ invoice, payment }`                                                                     |
+| GET    | /api/w/:slug/payments              | `?clientId&from&to&method&page&pageSize`                                      | `Paginated<PaymentDto>`                                                                    |
+| DELETE | /api/w/:slug/payments/:id          | reverses the payment and its journal entry                                    | `{ ok }`                                                                                   |
 
 `InvoiceDetailDto` = `InvoiceDto` + `lines: InvoiceLineDto[]`, `client: ClientDto`,
 `project?: ProjectDto`, `payments: PaymentDto[]`, `approvals: ApprovalDto[]`,
@@ -302,46 +302,67 @@ shared DTOs. Services (`src/services/*.ts`) hold business logic; routes stay thi
 
 ### Expenses
 
-| Method | Path                                    | Body / query                                     |
-| ------ | --------------------------------------- | ------------------------------------------------ |
-| GET    | /api/w/:slug/expenses                   | `?q&status&accountId&clientId&from&to&sort&dir&page&pageSize` → `Paginated<ExpenseDto>` + summary |
-| POST   | /api/w/:slug/expenses                   | expenseInputSchema                               |
-| GET    | /api/w/:slug/expenses/:id               | `{ expense, approvals, journalEntries, history }`|
-| PATCH  | /api/w/:slug/expenses/:id               | partial (draft/rejected only)                    |
-| DELETE | /api/w/:slug/expenses/:id               | draft only                                       |
-| POST   | /api/w/:slug/expenses/:id/submit        |                                                  |
-| POST   | /api/w/:slug/expenses/:id/approve       | `{ comment? }`                                   |
-| POST   | /api/w/:slug/expenses/:id/reject        | `{ comment }`                                    |
-| POST   | /api/w/:slug/expenses/:id/pay           | `{ date, method, reference? }`                   |
+| Method | Path                              | Body / query                                                                                      |
+| ------ | --------------------------------- | ------------------------------------------------------------------------------------------------- |
+| GET    | /api/w/:slug/expenses             | `?q&status&accountId&clientId&from&to&sort&dir&page&pageSize` → `Paginated<ExpenseDto>` + summary |
+| POST   | /api/w/:slug/expenses             | expenseInputSchema                                                                                |
+| GET    | /api/w/:slug/expenses/:id         | `{ expense, approvals, journalEntries, history }`                                                 |
+| PATCH  | /api/w/:slug/expenses/:id         | partial (draft/rejected only)                                                                     |
+| DELETE | /api/w/:slug/expenses/:id         | draft only                                                                                        |
+| POST   | /api/w/:slug/expenses/:id/submit  |                                                                                                   |
+| POST   | /api/w/:slug/expenses/:id/approve | `{ comment? }`                                                                                    |
+| POST   | /api/w/:slug/expenses/:id/reject  | `{ comment }`                                                                                     |
+| POST   | /api/w/:slug/expenses/:id/pay     | `{ date, method, reference? }`                                                                    |
 
 ### Ledger & reports
 
-| Method | Path                                      | Body / query                                       |
-| ------ | ----------------------------------------- | -------------------------------------------------- |
-| GET    | /api/w/:slug/accounts                     | `?includeArchived` → `{ items: AccountDto[], tree: AccountNode[] }` (each with `balanceCents`) |
-| POST   | /api/w/:slug/accounts                     | accountInputSchema                                 |
-| PATCH  | /api/w/:slug/accounts/:id                 | partial                                            |
-| GET    | /api/w/:slug/accounts/:id/register        | `?from&to&page&pageSize` → `{ account, openingBalanceCents, items: RegisterRow[], closingBalanceCents, total }` |
-| GET    | /api/w/:slug/journal                      | `?from&to&accountId&sourceType&q&page&pageSize` → `Paginated<JournalEntryDto>` |
-| POST   | /api/w/:slug/journal                      | manualJournalEntrySchema                           |
-| GET    | /api/w/:slug/journal/:id                  | `{ entry: JournalEntryDto }`                       |
-| POST   | /api/w/:slug/journal/:id/reverse          | `{ date?, memo? }`                                 |
-| GET    | /api/w/:slug/reports/profit-loss          | `?from&to&compare=previous` → `ProfitLossDto`      |
-| GET    | /api/w/:slug/reports/balance-sheet        | `?asOf` → `BalanceSheetDto`                        |
-| GET    | /api/w/:slug/reports/trial-balance        | `?asOf` → `TrialBalanceDto`                        |
-| GET    | /api/w/:slug/reports/ar-aging             | `?asOf` → `AgingReportDto`                         |
-| GET    | /api/w/:slug/reports/tax-summary          | `?from&to` → `TaxSummaryDto`                       |
-| GET    | /api/w/:slug/reports/revenue-by-client    | `?from&to` → `RevenueByClientDto`                  |
-| GET    | /api/w/:slug/reports/time-utilisation     | `?from&to` → `TimeUtilisationDto`                  |
+| Method | Path                                   | Body / query                                                                                                    |
+| ------ | -------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| GET    | /api/w/:slug/accounts                  | `?includeArchived` → `{ items: AccountDto[], tree: AccountNode[] }` (each with `balanceCents`)                  |
+| POST   | /api/w/:slug/accounts                  | accountInputSchema                                                                                              |
+| PATCH  | /api/w/:slug/accounts/:id              | partial                                                                                                         |
+| GET    | /api/w/:slug/accounts/:id/register     | `?from&to&page&pageSize` → `{ account, openingBalanceCents, items: RegisterRow[], closingBalanceCents, total }` |
+| GET    | /api/w/:slug/journal                   | `?from&to&accountId&sourceType&q&page&pageSize` → `Paginated<JournalEntryDto>`                                  |
+| POST   | /api/w/:slug/journal                   | manualJournalEntrySchema                                                                                        |
+| GET    | /api/w/:slug/journal/:id               | `{ entry: JournalEntryDto }`                                                                                    |
+| POST   | /api/w/:slug/journal/:id/reverse       | `{ date?, memo? }`                                                                                              |
+| GET    | /api/w/:slug/reports/profit-loss       | `?from&to&compare=previous` → `ProfitLossDto`                                                                   |
+| GET    | /api/w/:slug/reports/balance-sheet     | `?asOf` → `BalanceSheetDto`                                                                                     |
+| GET    | /api/w/:slug/reports/trial-balance     | `?asOf` → `TrialBalanceDto`                                                                                     |
+| GET    | /api/w/:slug/reports/ar-aging          | `?asOf` → `AgingReportDto`                                                                                      |
+| GET    | /api/w/:slug/reports/tax-summary       | `?from&to` → `TaxSummaryDto`                                                                                    |
+| GET    | /api/w/:slug/reports/revenue-by-client | `?from&to` → `RevenueByClientDto`                                                                               |
+| GET    | /api/w/:slug/reports/time-utilisation  | `?from&to` → `TimeUtilisationDto`                                                                               |
 
 ### Approvals & notifications
 
-| Method | Path                                      |                                                     |
-| ------ | ----------------------------------------- | --------------------------------------------------- |
-| GET    | /api/w/:slug/approvals                    | `?status=pending|approved|rejected|all` → `{ items: ApprovalDto[] }` with subject summaries |
-| GET    | /api/w/:slug/notifications                | `?unread&page&pageSize` → `Paginated<NotificationDto>` + `unreadCount` |
-| POST   | /api/w/:slug/notifications/read-all       |                                                     |
-| POST   | /api/w/:slug/notifications/:id/read       |                                                     |
+| Method | Path                                |                                                                        |
+| ------ | ----------------------------------- | ---------------------------------------------------------------------- |
+| GET    | /api/w/:slug/approvals              | `?status=pending                                                       | approved | rejected | all`→`{ items: ApprovalDto[] }` with subject summaries |
+| GET    | /api/w/:slug/notifications          | `?unread&page&pageSize` → `Paginated<NotificationDto>` + `unreadCount` |
+| POST   | /api/w/:slug/notifications/read-all |                                                                        |
+| POST   | /api/w/:slug/notifications/:id/read |                                                                        |
+
+### Implementation notes (API as built)
+
+- Creation endpoints respond with HTTP 201.
+- Expense mutations (create, update, submit, approve, reject, pay) return the detail shape
+  `{ expense, approvals, journalEntries, history }`.
+- `GET /calendar` returns `{ month, events }`; `POST /notifications/read-all` returns
+  `{ ok, updated }`; `POST /notifications/:id/read` returns `{ notification }`.
+- A non-member of an existing workspace gets 403; an unknown slug gets 404. Deleting a non-draft
+  invoice/expense or editing a locked one is 409 `invalid_transition`; deleting an invoiced time
+  entry is 409 `conflict`.
+- Invoice lines must reference `revenue` accounts and expenses `expense` accounts; invalid
+  references are 400 validation errors with paths such as `lines.0.accountId`.
+- The invoice list `status` filter also accepts `open`; `overdue` never includes `approved`
+  invoices. Payments may be recorded against `approved` (unsent) invoices. Users with the approve
+  permission may approve directly from `draft`.
+- `GET /accounts` and `GET /tax-rates` are readable by every member; writes need `ledger.post`
+  (accounts, journal) or `workspace.manage` (tax rates). `PATCH /tax-rates/:id` accepts `archived`.
+- `DELETE /members/:userId` on yourself leaves the workspace (the last owner cannot leave).
+- Report defaults: `from` = start of the fiscal year, `to`/`asOf` = today.
+- Voiding an invoice releases its time entries so they can be billed again.
 
 ### Error codes
 
@@ -447,8 +468,8 @@ of **2026-06-30**; docker-compose sets `LEDGERLINE_TODAY=2026-06-30` so the demo
 
 Demo credentials:
 
-| Email                      | Password     | Role in Northlight Studio |
-| -------------------------- | ------------ | ------------------------- |
-| ada@northlight.studio      | password123  | owner                     |
-| marcus@northlight.studio   | password123  | accountant                |
-| priya@northlight.studio    | password123  | member                    |
+| Email                    | Password    | Role in Northlight Studio |
+| ------------------------ | ----------- | ------------------------- |
+| ada@northlight.studio    | password123 | owner                     |
+| marcus@northlight.studio | password123 | accountant                |
+| priya@northlight.studio  | password123 | member                    |

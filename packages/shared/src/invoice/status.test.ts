@@ -13,7 +13,15 @@ import {
   statusAfterPayment,
 } from './status';
 
-const ALL: InvoiceStatus[] = ['draft', 'pending_approval', 'approved', 'sent', 'partially_paid', 'paid', 'void'];
+const ALL: InvoiceStatus[] = [
+  'draft',
+  'pending_approval',
+  'approved',
+  'sent',
+  'partially_paid',
+  'paid',
+  'void',
+];
 
 describe('INVOICE_TRANSITIONS', () => {
   it('matches the documented lifecycle', () => {
@@ -29,7 +37,14 @@ describe('INVOICE_TRANSITIONS', () => {
   });
 
   it('allows the happy path draft → pending_approval → approved → sent → partially_paid → paid', () => {
-    const path: InvoiceStatus[] = ['draft', 'pending_approval', 'approved', 'sent', 'partially_paid', 'paid'];
+    const path: InvoiceStatus[] = [
+      'draft',
+      'pending_approval',
+      'approved',
+      'sent',
+      'partially_paid',
+      'paid',
+    ];
     for (let i = 1; i < path.length; i++) {
       expect(canTransition(path[i - 1] as InvoiceStatus, path[i] as InvoiceStatus)).toBe(true);
     }
@@ -83,10 +98,14 @@ describe('deriveInvoiceStatus', () => {
 
   it('derives overdue only for sent and partially paid invoices past their due date', () => {
     expect(deriveInvoiceStatus({ status: 'sent', dueDate: '2024-06-29' }, today)).toBe('overdue');
-    expect(deriveInvoiceStatus({ status: 'partially_paid', dueDate: '2024-01-01' }, today)).toBe('overdue');
+    expect(deriveInvoiceStatus({ status: 'partially_paid', dueDate: '2024-01-01' }, today)).toBe(
+      'overdue',
+    );
     expect(deriveInvoiceStatus({ status: 'sent', dueDate: '2024-06-30' }, today)).toBe('sent');
     expect(deriveInvoiceStatus({ status: 'sent', dueDate: '2024-07-01' }, today)).toBe('sent');
-    expect(deriveInvoiceStatus({ status: 'partially_paid', dueDate: '2024-06-30' }, today)).toBe('partially_paid');
+    expect(deriveInvoiceStatus({ status: 'partially_paid', dueDate: '2024-06-30' }, today)).toBe(
+      'partially_paid',
+    );
   });
 
   it('never marks other statuses overdue', () => {
@@ -121,8 +140,12 @@ describe('statusAfterPayment', () => {
 });
 
 describe('invoiceActions', () => {
-  const actions = (status: InvoiceStatus, role: Role | null, requireInvoiceApproval: boolean, balanceCents = 1000) =>
-    invoiceActions({ status, role, settings: { requireInvoiceApproval }, balanceCents });
+  const actions = (
+    status: InvoiceStatus,
+    role: Role | null,
+    requireInvoiceApproval: boolean,
+    balanceCents = 1000,
+  ) => invoiceActions({ status, role, settings: { requireInvoiceApproval }, balanceCents });
 
   it('always offers print and duplicate first', () => {
     for (const s of ALL) {
@@ -134,7 +157,13 @@ describe('invoiceActions', () => {
 
   describe('draft', () => {
     it('lets a member edit, delete and submit when approval is required', () => {
-      expect(actions('draft', 'member', true)).toEqual(['print', 'duplicate', 'edit', 'delete', 'submit']);
+      expect(actions('draft', 'member', true)).toEqual([
+        'print',
+        'duplicate',
+        'edit',
+        'delete',
+        'submit',
+      ]);
     });
 
     it('offers a member no submit when approval is not required', () => {
@@ -142,9 +171,28 @@ describe('invoiceActions', () => {
     });
 
     it('lets approvers approve directly, alongside editing', () => {
-      expect(actions('draft', 'accountant', true)).toEqual(['print', 'duplicate', 'edit', 'delete', 'submit', 'approve']);
-      expect(actions('draft', 'accountant', false)).toEqual(['print', 'duplicate', 'edit', 'delete', 'approve']);
-      expect(actions('draft', 'owner', false)).toEqual(['print', 'duplicate', 'edit', 'delete', 'approve']);
+      expect(actions('draft', 'accountant', true)).toEqual([
+        'print',
+        'duplicate',
+        'edit',
+        'delete',
+        'submit',
+        'approve',
+      ]);
+      expect(actions('draft', 'accountant', false)).toEqual([
+        'print',
+        'duplicate',
+        'edit',
+        'delete',
+        'approve',
+      ]);
+      expect(actions('draft', 'owner', false)).toEqual([
+        'print',
+        'duplicate',
+        'edit',
+        'delete',
+        'approve',
+      ]);
       expect(actions('draft', 'admin', true)).toEqual(actions('draft', 'owner', true));
     });
 
@@ -155,25 +203,59 @@ describe('invoiceActions', () => {
 
   describe('pending_approval', () => {
     it('lets approvers approve, reject or void; members only look', () => {
-      expect(actions('pending_approval', 'accountant', true)).toEqual(['print', 'duplicate', 'approve', 'reject', 'void']);
-      expect(actions('pending_approval', 'owner', true)).toEqual(['print', 'duplicate', 'approve', 'reject', 'void']);
+      expect(actions('pending_approval', 'accountant', true)).toEqual([
+        'print',
+        'duplicate',
+        'approve',
+        'reject',
+        'void',
+      ]);
+      expect(actions('pending_approval', 'owner', true)).toEqual([
+        'print',
+        'duplicate',
+        'approve',
+        'reject',
+        'void',
+      ]);
       expect(actions('pending_approval', 'member', true)).toEqual(['print', 'duplicate']);
     });
   });
 
   describe('approved', () => {
     it('lets privileged roles send, record a payment or void', () => {
-      expect(actions('approved', 'accountant', true)).toEqual(['print', 'duplicate', 'send', 'record_payment', 'void']);
-      expect(actions('approved', 'admin', false)).toEqual(['print', 'duplicate', 'send', 'record_payment', 'void']);
+      expect(actions('approved', 'accountant', true)).toEqual([
+        'print',
+        'duplicate',
+        'send',
+        'record_payment',
+        'void',
+      ]);
+      expect(actions('approved', 'admin', false)).toEqual([
+        'print',
+        'duplicate',
+        'send',
+        'record_payment',
+        'void',
+      ]);
       expect(actions('approved', 'member', true)).toEqual(['print', 'duplicate']);
     });
   });
 
   describe('sent / partially_paid', () => {
     it('allows payments only while a balance remains', () => {
-      expect(actions('sent', 'accountant', true, 500)).toEqual(['print', 'duplicate', 'record_payment', 'void']);
+      expect(actions('sent', 'accountant', true, 500)).toEqual([
+        'print',
+        'duplicate',
+        'record_payment',
+        'void',
+      ]);
       expect(actions('sent', 'accountant', true, 0)).toEqual(['print', 'duplicate', 'void']);
-      expect(actions('partially_paid', 'owner', true, 1)).toEqual(['print', 'duplicate', 'record_payment', 'void']);
+      expect(actions('partially_paid', 'owner', true, 1)).toEqual([
+        'print',
+        'duplicate',
+        'record_payment',
+        'void',
+      ]);
       expect(actions('partially_paid', 'owner', true, 0)).toEqual(['print', 'duplicate', 'void']);
     });
 

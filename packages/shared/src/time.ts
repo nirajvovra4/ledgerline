@@ -2,7 +2,10 @@ import { mulCents } from './money';
 import type { Cents, IsoDate } from './types';
 
 /** "1h 30m" style formatting. Zero renders as "0m". */
-export function minutesToDuration(minutes: number, style: 'short' | 'clock' | 'decimal' = 'short'): string {
+export function minutesToDuration(
+  minutes: number,
+  style: 'short' | 'clock' | 'decimal' = 'short',
+): string {
   const sign = minutes < 0 ? '-' : '';
   const abs = Math.abs(Math.round(minutes));
   const h = Math.floor(abs / 60);
@@ -55,7 +58,9 @@ export interface TimeLike {
   billable: boolean;
 }
 
-export function groupTimeByDay<T extends TimeLike>(entries: T[]): Map<IsoDate, { minutes: number; billableMinutes: number; entries: T[] }> {
+export function groupTimeByDay<T extends TimeLike>(
+  entries: T[],
+): Map<IsoDate, { minutes: number; billableMinutes: number; entries: T[] }> {
   const map = new Map<IsoDate, { minutes: number; billableMinutes: number; entries: T[] }>();
   for (const e of entries) {
     let bucket = map.get(e.date);

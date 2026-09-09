@@ -236,7 +236,10 @@ describe('period boundaries', () => {
 
   it('builds ranges for a period around today', () => {
     expect(rangeForPeriod('2024-05-17', 'month')).toEqual({ from: '2024-05-01', to: '2024-05-31' });
-    expect(rangeForPeriod('2024-05-17', 'quarter')).toEqual({ from: '2024-04-01', to: '2024-06-30' });
+    expect(rangeForPeriod('2024-05-17', 'quarter')).toEqual({
+      from: '2024-04-01',
+      to: '2024-06-30',
+    });
     expect(rangeForPeriod('2024-05-17', 'year')).toEqual({ from: '2024-01-01', to: '2024-12-31' });
     expect(monthRange(2024, 2)).toEqual({ from: '2024-02-01', to: '2024-02-29' });
     expect(monthRange(2024, 12)).toEqual({ from: '2024-12-01', to: '2024-12-31' });
@@ -279,21 +282,48 @@ describe('weeks (Monday start)', () => {
 
 describe('previousRange', () => {
   it('steps back a whole month', () => {
-    expect(previousRange({ from: '2024-03-01', to: '2024-03-31' })).toEqual({ from: '2024-02-01', to: '2024-02-29' });
-    expect(previousRange({ from: '2024-01-01', to: '2024-01-31' })).toEqual({ from: '2023-12-01', to: '2023-12-31' });
-    expect(previousRange({ from: '2024-02-01', to: '2024-02-29' })).toEqual({ from: '2024-01-01', to: '2024-01-31' });
+    expect(previousRange({ from: '2024-03-01', to: '2024-03-31' })).toEqual({
+      from: '2024-02-01',
+      to: '2024-02-29',
+    });
+    expect(previousRange({ from: '2024-01-01', to: '2024-01-31' })).toEqual({
+      from: '2023-12-01',
+      to: '2023-12-31',
+    });
+    expect(previousRange({ from: '2024-02-01', to: '2024-02-29' })).toEqual({
+      from: '2024-01-01',
+      to: '2024-01-31',
+    });
   });
 
   it('steps back a whole quarter and year', () => {
-    expect(previousRange({ from: '2024-04-01', to: '2024-06-30' })).toEqual({ from: '2024-01-01', to: '2024-03-31' });
-    expect(previousRange({ from: '2024-01-01', to: '2024-03-31' })).toEqual({ from: '2023-10-01', to: '2023-12-31' });
-    expect(previousRange({ from: '2024-01-01', to: '2024-12-31' })).toEqual({ from: '2023-01-01', to: '2023-12-31' });
+    expect(previousRange({ from: '2024-04-01', to: '2024-06-30' })).toEqual({
+      from: '2024-01-01',
+      to: '2024-03-31',
+    });
+    expect(previousRange({ from: '2024-01-01', to: '2024-03-31' })).toEqual({
+      from: '2023-10-01',
+      to: '2023-12-31',
+    });
+    expect(previousRange({ from: '2024-01-01', to: '2024-12-31' })).toEqual({
+      from: '2023-01-01',
+      to: '2023-12-31',
+    });
   });
 
   it('steps back by the same number of days for arbitrary ranges', () => {
-    expect(previousRange({ from: '2024-03-10', to: '2024-03-19' })).toEqual({ from: '2024-02-29', to: '2024-03-09' });
-    expect(previousRange({ from: '2024-03-10', to: '2024-03-10' })).toEqual({ from: '2024-03-09', to: '2024-03-09' });
-    expect(previousRange({ from: '2024-03-01', to: '2024-03-15' })).toEqual({ from: '2024-02-15', to: '2024-02-29' });
+    expect(previousRange({ from: '2024-03-10', to: '2024-03-19' })).toEqual({
+      from: '2024-02-29',
+      to: '2024-03-09',
+    });
+    expect(previousRange({ from: '2024-03-10', to: '2024-03-10' })).toEqual({
+      from: '2024-03-09',
+      to: '2024-03-09',
+    });
+    expect(previousRange({ from: '2024-03-01', to: '2024-03-15' })).toEqual({
+      from: '2024-02-15',
+      to: '2024-02-29',
+    });
   });
 
   it('counts months between month-aligned bounds', () => {
@@ -365,7 +395,12 @@ describe('splitByMonth / splitByWeek / eachDay', () => {
   });
 
   it('lists every day of a range', () => {
-    expect(eachDay({ from: '2024-02-27', to: '2024-03-01' })).toEqual(['2024-02-27', '2024-02-28', '2024-02-29', '2024-03-01']);
+    expect(eachDay({ from: '2024-02-27', to: '2024-03-01' })).toEqual([
+      '2024-02-27',
+      '2024-02-28',
+      '2024-02-29',
+      '2024-03-01',
+    ]);
     expect(eachDay({ from: '2024-02-27', to: '2024-02-27' })).toEqual(['2024-02-27']);
     expect(eachDay({ from: '2024-02-28', to: '2024-02-27' })).toEqual([]);
   });
@@ -407,7 +442,9 @@ describe('calendarGrid', () => {
     const grid = calendarGrid(2024, 2);
     const cells = grid.flat();
     expect(cells.filter((c) => c.inMonth)).toHaveLength(29);
-    expect(cells.filter((c) => c.inMonth).map((c) => c.day)).toEqual(Array.from({ length: 29 }, (_, i) => i + 1));
+    expect(cells.filter((c) => c.inMonth).map((c) => c.day)).toEqual(
+      Array.from({ length: 29 }, (_, i) => i + 1),
+    );
     for (const row of grid) {
       row.forEach((cell, col) => {
         expect(cell.weekend).toBe(col >= 5);
@@ -443,7 +480,9 @@ describe('formatDate', () => {
     expect(formatDateRange({ from: '2024-03-05', to: '2024-03-05' })).toBe('5 Mar 2024');
     expect(formatDateRange({ from: '2024-03-01', to: '2024-03-15' })).toBe('1–15 Mar 2024');
     expect(formatDateRange({ from: '2024-01-01', to: '2024-03-15' })).toBe('1 Jan – 15 Mar 2024');
-    expect(formatDateRange({ from: '2023-12-15', to: '2024-01-15' })).toBe('15 Dec 2023 – 15 Jan 2024');
+    expect(formatDateRange({ from: '2023-12-15', to: '2024-01-15' })).toBe(
+      '15 Dec 2023 – 15 Jan 2024',
+    );
   });
 
   it('formats timestamps in UTC', () => {
@@ -456,7 +495,20 @@ describe('formatDate', () => {
 
   it('exposes month and weekday names', () => {
     expect(MONTH_NAMES).toHaveLength(12);
-    expect(MONTH_SHORT).toEqual(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
+    expect(MONTH_SHORT).toEqual([
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ]);
     expect(WEEKDAY_NAMES[0]).toBe('Monday');
     expect(WEEKDAY_SHORT).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
   });

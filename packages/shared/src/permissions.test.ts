@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_PERMISSIONS, assignableRoles, can, canAny, outranks, type Permission, ROLE_PERMISSIONS, ROLE_RANK } from './permissions';
+import {
+  ALL_PERMISSIONS,
+  assignableRoles,
+  can,
+  canAny,
+  outranks,
+  type Permission,
+  ROLE_PERMISSIONS,
+  ROLE_RANK,
+} from './permissions';
 import type { Role } from './types';
 
 const ROLES: Role[] = ['owner', 'admin', 'accountant', 'member'];

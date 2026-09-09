@@ -16,7 +16,10 @@ export function formatIssues(error: ZodError | { issues: ZodIssue[] }): FieldIss
   }));
 }
 
-export function validate<S extends ZodTypeAny>(schema: S, data: unknown): ValidationResult<z.infer<S>> {
+export function validate<S extends ZodTypeAny>(
+  schema: S,
+  data: unknown,
+): ValidationResult<z.infer<S>> {
   const result = schema.safeParse(data);
   if (result.success) return { ok: true, data: result.data };
   return { ok: false, issues: formatIssues(result.error) };
@@ -32,6 +35,9 @@ export function issuesByField(issues: FieldIssue[]): Record<string, string> {
   return out;
 }
 
-export function firstIssueMessage(issues: FieldIssue[], fallback = 'Please check the form.'): string {
+export function firstIssueMessage(
+  issues: FieldIssue[],
+  fallback = 'Please check the form.',
+): string {
   return issues[0]?.message ?? fallback;
 }

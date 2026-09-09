@@ -34,11 +34,20 @@ export interface InvoiceTotals {
  * The discount is applied at invoice level and allocated to lines proportionally, so that tax is
  * charged on the discounted amount for each rate.
  */
-export function computeInvoiceTotals(lines: LineInput[], discountBp: BasisPoints = 0): InvoiceTotals {
+export function computeInvoiceTotals(
+  lines: LineInput[],
+  discountBp: BasisPoints = 0,
+): InvoiceTotals {
   const gross = lines.map((l) => mulCents(l.unitPriceCents, l.quantity));
   const subtotalCents = gross.reduce((a, b) => a + b, 0);
   const discountCents = discountBp > 0 ? applyBp(subtotalCents, discountBp) : 0;
-  const discountShares = discountCents > 0 ? allocateProportionally(discountCents, gross.map((g) => Math.max(g, 0))) : gross.map(() => 0);
+  const discountShares =
+    discountCents > 0
+      ? allocateProportionally(
+          discountCents,
+          gross.map((g) => Math.max(g, 0)),
+        )
+      : gross.map(() => 0);
 
   const lineTotals: LineTotals[] = lines.map((line, i) => {
     const grossCents = gross[i] ?? 0;
@@ -54,7 +63,13 @@ export function computeInvoiceTotals(lines: LineInput[], discountBp: BasisPoints
 
   const taxCents = lineTotals.reduce((a, l) => a + l.taxCents, 0);
   const netCents = subtotalCents - discountCents;
-  return { lines: lineTotals, subtotalCents, discountCents, taxCents, totalCents: netCents + taxCents };
+  return {
+    lines: lineTotals,
+    subtotalCents,
+    discountCents,
+    taxCents,
+    totalCents: netCents + taxCents,
+  };
 }
 
 export function balanceForInvoice(totalCents: Cents, amountPaidCents: Cents): Cents {

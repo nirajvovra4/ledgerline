@@ -12,7 +12,13 @@ import {
   totalsByAccount,
 } from './reports';
 
-const acct = (id: string, code: string, name: string, type: AccountType, parentId: string | null = null) => ({ id, code, name, type, parentId });
+const acct = (
+  id: string,
+  code: string,
+  name: string,
+  type: AccountType,
+  parentId: string | null = null,
+) => ({ id, code, name, type, parentId });
 
 const ACCOUNTS = [
   acct('cash', '1000', 'Operating Bank Account', 'asset'),
@@ -26,8 +32,18 @@ const ACCOUNTS = [
   acct('other', '5900', 'Other Expenses', 'expense'),
 ];
 
-const dr = (accountId: string, date: string, cents: number): LedgerLineLike => ({ accountId, date, debitCents: cents, creditCents: 0 });
-const cr = (accountId: string, date: string, cents: number): LedgerLineLike => ({ accountId, date, debitCents: 0, creditCents: cents });
+const dr = (accountId: string, date: string, cents: number): LedgerLineLike => ({
+  accountId,
+  date,
+  debitCents: cents,
+  creditCents: 0,
+});
+const cr = (accountId: string, date: string, cents: number): LedgerLineLike => ({
+  accountId,
+  date,
+  debitCents: 0,
+  creditCents: cents,
+});
 
 /** A small, balanced journal spanning Q1 2024. */
 const LINES: LedgerLineLike[] = [
@@ -143,18 +159,41 @@ describe('buildProfitAndLoss', () => {
   });
 
   it('includes comparison figures when a compare range is given', () => {
-    const pl = buildProfitAndLoss(LINES, ACCOUNTS, { from: '2024-02-01', to: '2024-02-29' }, { from: '2024-01-01', to: '2024-01-31' });
+    const pl = buildProfitAndLoss(
+      LINES,
+      ACCOUNTS,
+      { from: '2024-02-01', to: '2024-02-29' },
+      { from: '2024-01-01', to: '2024-01-31' },
+    );
     expect(pl.compareFrom).toBe('2024-01-01');
     expect(pl.compareTo).toBe('2024-01-31');
     // Revenue accounts had no February activity but appear because of the comparison.
     expect(pl.revenue.lines).toEqual([
-      { accountId: 'services', code: '4000', name: 'Services Revenue', amountCents: 0, previousCents: 18000 },
-      { accountId: 'product', code: '4100', name: 'Product Revenue', amountCents: 0, previousCents: 4500 },
+      {
+        accountId: 'services',
+        code: '4000',
+        name: 'Services Revenue',
+        amountCents: 0,
+        previousCents: 18000,
+      },
+      {
+        accountId: 'product',
+        code: '4100',
+        name: 'Product Revenue',
+        amountCents: 0,
+        previousCents: 4500,
+      },
     ]);
     expect(pl.revenue.totalCents).toBe(0);
     expect(pl.revenue.previousTotalCents).toBe(22500);
     expect(pl.expenses.lines).toEqual([
-      { accountId: 'software', code: '5100', name: 'Software & Subscriptions', amountCents: 5000, previousCents: 0 },
+      {
+        accountId: 'software',
+        code: '5100',
+        name: 'Software & Subscriptions',
+        amountCents: 5000,
+        previousCents: 0,
+      },
       { accountId: 'travel', code: '5200', name: 'Travel', amountCents: 2500, previousCents: 0 },
     ]);
     expect(pl.expenses.previousTotalCents).toBe(0);
@@ -163,7 +202,12 @@ describe('buildProfitAndLoss', () => {
   });
 
   it('gives zero previous figures for an empty comparison period', () => {
-    const pl = buildProfitAndLoss(LINES, ACCOUNTS, { from: '2024-01-01', to: '2024-03-31' }, { from: '2023-10-01', to: '2023-12-31' });
+    const pl = buildProfitAndLoss(
+      LINES,
+      ACCOUNTS,
+      { from: '2024-01-01', to: '2024-03-31' },
+      { from: '2023-10-01', to: '2023-12-31' },
+    );
     expect(pl.previousNetIncomeCents).toBe(0);
     expect(pl.revenue.previousTotalCents).toBe(0);
     expect(pl.revenue.lines.every((l) => l.previousCents === 0)).toBe(true);
@@ -186,7 +230,9 @@ describe('buildBalanceSheet', () => {
       ['1200', 28100],
     ]);
     expect(bs.assets.totalCents).toBe(130600);
-    expect(bs.liabilities.lines).toEqual([{ accountId: 'tax', code: '2200', name: 'Sales Tax Payable', amountCents: 3600 }]);
+    expect(bs.liabilities.lines).toEqual([
+      { accountId: 'tax', code: '2200', name: 'Sales Tax Payable', amountCents: 3600 },
+    ]);
     expect(bs.liabilities.totalCents).toBe(3600);
     expect(bs.equity.totalCents).toBe(100000);
     expect(bs.currentEarningsCents).toBe(27000);
@@ -235,7 +281,11 @@ describe('buildTrialBalance', () => {
       ['5100', 5000, 0],
       ['5200', 2500, 0],
     ]);
-    expect(tb.rows[0]).toMatchObject({ accountId: 'cash', name: 'Operating Bank Account', type: 'asset' });
+    expect(tb.rows[0]).toMatchObject({
+      accountId: 'cash',
+      name: 'Operating Bank Account',
+      type: 'asset',
+    });
     expect(tb.totalDebitCents).toBe(138100);
     expect(tb.totalCreditCents).toBe(138100);
     expect(tb.balanced).toBe(true);
@@ -246,14 +296,25 @@ describe('buildTrialBalance', () => {
     expect(jan.rows.map((r) => r.code)).toEqual(['1000', '1200', '2200', '3000', '4000', '4100']);
     expect(jan.totalDebitCents).toBe(126100);
     expect(jan.balanced).toBe(true);
-    const broken = buildTrialBalance([...LINES, cr('tax', '2024-03-31', 7)], ACCOUNTS, '2024-03-31');
+    const broken = buildTrialBalance(
+      [...LINES, cr('tax', '2024-03-31', 7)],
+      ACCOUNTS,
+      '2024-03-31',
+    );
     expect(broken.totalCreditCents).toBe(138107);
     expect(broken.balanced).toBe(false);
   });
 });
 
 describe('buildAccountTree / flattenTree', () => {
-  const dto = (id: string, code: string, name: string, type: AccountType, parentId: string | null, balanceCents: number): AccountDto => ({
+  const dto = (
+    id: string,
+    code: string,
+    name: string,
+    type: AccountType,
+    parentId: string | null,
+    balanceCents: number,
+  ): AccountDto => ({
     id,
     workspaceId: 'w',
     code,

@@ -22,10 +22,30 @@ export interface LabeledOption<T extends string> {
 }
 
 export const ROLES: LabeledOption<Role>[] = [
-  { value: 'owner', label: 'Owner', tone: 'info', description: 'Full control, including billing and deletion.' },
-  { value: 'admin', label: 'Admin', tone: 'info', description: 'Manage members, settings and all records.' },
-  { value: 'accountant', label: 'Accountant', tone: 'positive', description: 'Approve, post to the ledger and run reports.' },
-  { value: 'member', label: 'Member', tone: 'neutral', description: 'Log time, draft invoices and expenses.' },
+  {
+    value: 'owner',
+    label: 'Owner',
+    tone: 'info',
+    description: 'Full control, including billing and deletion.',
+  },
+  {
+    value: 'admin',
+    label: 'Admin',
+    tone: 'info',
+    description: 'Manage members, settings and all records.',
+  },
+  {
+    value: 'accountant',
+    label: 'Accountant',
+    tone: 'positive',
+    description: 'Approve, post to the ledger and run reports.',
+  },
+  {
+    value: 'member',
+    label: 'Member',
+    tone: 'neutral',
+    description: 'Log time, draft invoices and expenses.',
+  },
 ];
 
 export const INVOICE_STATUSES: LabeledOption<DerivedInvoiceStatus>[] = [
@@ -90,7 +110,12 @@ export const NOTIFICATION_KINDS: LabeledOption<NotificationKind>[] = [
   { value: 'system', label: 'System', tone: 'muted' },
 ];
 
-export const AGING_BUCKETS: Array<{ key: AgingBucketKey; label: string; minDays: number; maxDays: number | null }> = [
+export const AGING_BUCKETS: Array<{
+  key: AgingBucketKey;
+  label: string;
+  minDays: number;
+  maxDays: number | null;
+}> = [
   { key: 'current', label: 'Current', minDays: -Infinity, maxDays: 0 },
   { key: 'd1_30', label: '1–30 days', minDays: 1, maxDays: 30 },
   { key: 'd31_60', label: '31–60 days', minDays: 31, maxDays: 60 },
@@ -138,20 +163,98 @@ export interface SystemAccountDefinition {
 }
 
 export const SYSTEM_ACCOUNTS: SystemAccountDefinition[] = [
-  { key: 'cash', code: '1000', name: 'Operating Bank Account', type: 'asset', description: 'Money received and paid out.' },
-  { key: 'accounts_receivable', code: '1200', name: 'Accounts Receivable', type: 'asset', description: 'Invoices issued but not yet paid.' },
-  { key: 'input_tax', code: '1300', name: 'Input Tax Receivable', type: 'asset', description: 'Tax paid on expenses, recoverable.' },
-  { key: 'accounts_payable', code: '2000', name: 'Accounts Payable', type: 'liability', description: 'Approved expenses not yet paid.' },
-  { key: 'sales_tax_payable', code: '2200', name: 'Sales Tax Payable', type: 'liability', description: 'Tax collected on invoices, owed to the authority.' },
-  { key: 'owner_equity', code: '3000', name: "Owner's Equity", type: 'equity', description: 'Capital contributed by the owners.' },
-  { key: 'retained_earnings', code: '3900', name: 'Retained Earnings', type: 'equity', description: 'Accumulated profit from prior periods.' },
-  { key: 'services_revenue', code: '4000', name: 'Services Revenue', type: 'revenue', description: 'Billable work.' },
-  { key: 'product_revenue', code: '4100', name: 'Product Revenue', type: 'revenue', description: 'Licences, assets and resold goods.' },
-  { key: 'other_income', code: '4900', name: 'Other Income', type: 'revenue', description: 'Interest, refunds and one-offs.' },
-  { key: 'software_expense', code: '5100', name: 'Software & Subscriptions', type: 'expense', description: '' },
+  {
+    key: 'cash',
+    code: '1000',
+    name: 'Operating Bank Account',
+    type: 'asset',
+    description: 'Money received and paid out.',
+  },
+  {
+    key: 'accounts_receivable',
+    code: '1200',
+    name: 'Accounts Receivable',
+    type: 'asset',
+    description: 'Invoices issued but not yet paid.',
+  },
+  {
+    key: 'input_tax',
+    code: '1300',
+    name: 'Input Tax Receivable',
+    type: 'asset',
+    description: 'Tax paid on expenses, recoverable.',
+  },
+  {
+    key: 'accounts_payable',
+    code: '2000',
+    name: 'Accounts Payable',
+    type: 'liability',
+    description: 'Approved expenses not yet paid.',
+  },
+  {
+    key: 'sales_tax_payable',
+    code: '2200',
+    name: 'Sales Tax Payable',
+    type: 'liability',
+    description: 'Tax collected on invoices, owed to the authority.',
+  },
+  {
+    key: 'owner_equity',
+    code: '3000',
+    name: "Owner's Equity",
+    type: 'equity',
+    description: 'Capital contributed by the owners.',
+  },
+  {
+    key: 'retained_earnings',
+    code: '3900',
+    name: 'Retained Earnings',
+    type: 'equity',
+    description: 'Accumulated profit from prior periods.',
+  },
+  {
+    key: 'services_revenue',
+    code: '4000',
+    name: 'Services Revenue',
+    type: 'revenue',
+    description: 'Billable work.',
+  },
+  {
+    key: 'product_revenue',
+    code: '4100',
+    name: 'Product Revenue',
+    type: 'revenue',
+    description: 'Licences, assets and resold goods.',
+  },
+  {
+    key: 'other_income',
+    code: '4900',
+    name: 'Other Income',
+    type: 'revenue',
+    description: 'Interest, refunds and one-offs.',
+  },
+  {
+    key: 'software_expense',
+    code: '5100',
+    name: 'Software & Subscriptions',
+    type: 'expense',
+    description: '',
+  },
   { key: 'travel_expense', code: '5200', name: 'Travel', type: 'expense', description: '' },
-  { key: 'contractor_expense', code: '5300', name: 'Contractors', type: 'expense', description: '' },
-  { key: 'office_expense', code: '5400', name: 'Office & Equipment', type: 'expense', description: '' },
+  {
+    key: 'contractor_expense',
+    code: '5300',
+    name: 'Contractors',
+    type: 'expense',
+    description: '',
+  },
+  {
+    key: 'office_expense',
+    code: '5400',
+    name: 'Office & Equipment',
+    type: 'expense',
+    description: '',
+  },
   { key: 'marketing_expense', code: '5500', name: 'Marketing', type: 'expense', description: '' },
   { key: 'other_expense', code: '5900', name: 'Other Expenses', type: 'expense', description: '' },
 ];

@@ -23,7 +23,11 @@ export const centsSchema = z
 export const positiveCentsSchema = centsSchema.positive('Amount must be greater than zero');
 export const nonNegativeCentsSchema = centsSchema.min(0, 'Amount cannot be negative');
 
-export const bpSchema = z.number().int().min(0, 'Cannot be negative').max(10_000, 'Cannot exceed 100%');
+export const bpSchema = z
+  .number()
+  .int()
+  .min(0, 'Cannot be negative')
+  .max(10_000, 'Cannot exceed 100%');
 
 export const uuidSchema = z.string().uuid('Invalid id');
 
@@ -39,7 +43,12 @@ export const requiredString = (max: number, label = 'This field') =>
 export const optionalString = (max: number, label?: string) =>
   z.preprocess((v) => (v == null ? '' : v), trimmedString(max, label)).default('');
 
-export const emailSchema = z.string().trim().toLowerCase().email('Enter a valid email address').max(254);
+export const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .email('Enter a valid email address')
+  .max(254);
 
 export const roleSchema = z.enum(['owner', 'admin', 'accountant', 'member']);
 export const paymentMethodSchema = z.enum(['bank_transfer', 'card', 'cash', 'cheque', 'other']);
@@ -59,7 +68,13 @@ export const invoiceStatusFilterSchema = z.enum([
   'open',
   'all',
 ]);
-export const expenseStatusSchema = z.enum(['draft', 'pending_approval', 'approved', 'paid', 'rejected']);
+export const expenseStatusSchema = z.enum([
+  'draft',
+  'pending_approval',
+  'approved',
+  'paid',
+  'rejected',
+]);
 
 const boolFromQuery = z.preprocess((v) => {
   if (typeof v === 'string') return v === 'true' || v === '1';
@@ -67,7 +82,12 @@ const boolFromQuery = z.preprocess((v) => {
 }, z.boolean());
 
 const intFromQuery = (min: number, max: number, fallback: number) =>
-  z.preprocess((v) => (typeof v === 'string' && v !== '' ? Number(v) : v), z.number().int().min(min).max(max)).catch(fallback);
+  z
+    .preprocess(
+      (v) => (typeof v === 'string' && v !== '' ? Number(v) : v),
+      z.number().int().min(min).max(max),
+    )
+    .catch(fallback);
 
 // ---------------------------------------------------------------------------
 // Auth
@@ -122,7 +142,11 @@ export const workspaceSettingsSchema = z.object({
     .regex(/^[A-Za-z0-9]*$/, 'Letters and numbers only'),
   nextInvoiceNumber: z.number().int().min(1, 'Must be at least 1').max(99_999_999),
   invoiceNumberPadding: z.number().int().min(0).max(8),
-  defaultPaymentTermsDays: z.number().int().min(0, 'Cannot be negative').max(365, 'At most 365 days'),
+  defaultPaymentTermsDays: z
+    .number()
+    .int()
+    .min(0, 'Cannot be negative')
+    .max(365, 'At most 365 days'),
   defaultTaxRateId: uuidSchema.nullable(),
   requireInvoiceApproval: z.boolean(),
   requireExpenseApproval: z.boolean(),
@@ -182,7 +206,10 @@ export const dateRangeSchema = z
     from: isoDateSchema.optional(),
     to: isoDateSchema.optional(),
   })
-  .refine((v) => !v.from || !v.to || v.from <= v.to, { message: '"From" must be before "to"', path: ['to'] });
+  .refine((v) => !v.from || !v.to || v.from <= v.to, {
+    message: '"From" must be before "to"',
+    path: ['to'],
+  });
 export type DateRangeQuery = z.infer<typeof dateRangeSchema>;
 
 export const asOfSchema = z.object({ asOf: isoDateSchema.optional() });
@@ -216,7 +243,12 @@ export const clientInputSchema = z.object({
   postalCode: optionalString(20, 'Postal code'),
   country: optionalString(80, 'Country'),
   taxId: optionalString(40, 'Tax ID'),
-  paymentTermsDays: z.number().int().min(0, 'Cannot be negative').max(365, 'At most 365 days').default(30),
+  paymentTermsDays: z
+    .number()
+    .int()
+    .min(0, 'Cannot be negative')
+    .max(365, 'At most 365 days')
+    .default(30),
   notes: optionalString(2000, 'Notes'),
   status: clientStatusSchema.default('active'),
 });
@@ -260,7 +292,11 @@ export const timeEntryInputSchema = z.object({
   projectId: uuidSchema,
   userId: uuidSchema.optional(),
   date: isoDateSchema,
-  minutes: z.number().int().min(1, 'Log at least one minute').max(24 * 60, 'A single entry cannot exceed 24 hours'),
+  minutes: z
+    .number()
+    .int()
+    .min(1, 'Log at least one minute')
+    .max(24 * 60, 'A single entry cannot exceed 24 hours'),
   description: optionalString(500, 'Description'),
   billable: z.boolean().default(true),
 });
@@ -294,7 +330,9 @@ export const invoiceLineInputSchema = z.object({
     .number({ invalid_type_error: 'Enter a quantity' })
     .positive('Quantity must be greater than zero')
     .max(1_000_000)
-    .refine((q) => Math.abs(q * 10_000 - Math.round(q * 10_000)) < 1e-6, { message: 'At most four decimal places' }),
+    .refine((q) => Math.abs(q * 10_000 - Math.round(q * 10_000)) < 1e-6, {
+      message: 'At most four decimal places',
+    }),
   unitPriceCents: centsSchema,
   taxRateId: uuidSchema.nullable().default(null),
   accountId: uuidSchema,
@@ -313,7 +351,10 @@ export const invoiceInputSchema = z
     poNumber: optionalString(60, 'PO number'),
     lines: z.array(invoiceLineInputSchema).min(1, 'Add at least one line').max(200),
   })
-  .refine((v) => v.issueDate <= v.dueDate, { message: 'Due date cannot be before the issue date', path: ['dueDate'] });
+  .refine((v) => v.issueDate <= v.dueDate, {
+    message: 'Due date cannot be before the issue date',
+    path: ['dueDate'],
+  });
 export type InvoiceInput = z.infer<typeof invoiceInputSchema>;
 
 export const invoiceListQuerySchema = listQuerySchema.extend({
@@ -373,11 +414,16 @@ export const expenseInputSchema = z
     reference: optionalString(80, 'Reference'),
     notes: optionalString(2000, 'Notes'),
   })
-  .refine((v) => !v.billable || v.clientId, { message: 'Billable expenses need a client', path: ['clientId'] });
+  .refine((v) => !v.billable || v.clientId, {
+    message: 'Billable expenses need a client',
+    path: ['clientId'],
+  });
 export type ExpenseInput = z.infer<typeof expenseInputSchema>;
 
 export const expenseListQuerySchema = listQuerySchema.extend({
-  status: z.enum(['draft', 'pending_approval', 'approved', 'paid', 'rejected', 'unpaid', 'all']).catch('all'),
+  status: z
+    .enum(['draft', 'pending_approval', 'approved', 'paid', 'rejected', 'unpaid', 'all'])
+    .catch('all'),
   accountId: uuidSchema.optional(),
   clientId: uuidSchema.optional(),
   projectId: uuidSchema.optional(),
@@ -422,7 +468,10 @@ export const journalLineInputSchema = z
     message: 'A line is either a debit or a credit',
     path: ['creditCents'],
   })
-  .refine((l) => l.debitCents > 0 || l.creditCents > 0, { message: 'Enter an amount', path: ['debitCents'] });
+  .refine((l) => l.debitCents > 0 || l.creditCents > 0, {
+    message: 'Enter an amount',
+    path: ['debitCents'],
+  });
 export type JournalLineInput = z.infer<typeof journalLineInputSchema>;
 
 export const manualJournalEntrySchema = z
@@ -432,7 +481,9 @@ export const manualJournalEntrySchema = z
     lines: z.array(journalLineInputSchema).min(2, 'An entry needs at least two lines').max(100),
   })
   .refine(
-    (e) => e.lines.reduce((s, l) => s + l.debitCents, 0) === e.lines.reduce((s, l) => s + l.creditCents, 0),
+    (e) =>
+      e.lines.reduce((s, l) => s + l.debitCents, 0) ===
+      e.lines.reduce((s, l) => s + l.creditCents, 0),
     { message: 'Debits must equal credits', path: ['lines'] },
   );
 export type ManualJournalEntryInput = z.infer<typeof manualJournalEntrySchema>;
@@ -441,7 +492,9 @@ export const journalListQuerySchema = listQuerySchema.extend({
   from: isoDateSchema.optional(),
   to: isoDateSchema.optional(),
   accountId: uuidSchema.optional(),
-  sourceType: z.enum(['invoice', 'payment', 'expense', 'expense_payment', 'manual', 'reversal']).optional(),
+  sourceType: z
+    .enum(['invoice', 'payment', 'expense', 'expense_payment', 'manual', 'reversal'])
+    .optional(),
 });
 
 export const reverseEntrySchema = z.object({

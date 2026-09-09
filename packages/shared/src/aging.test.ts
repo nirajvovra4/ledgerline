@@ -22,8 +22,10 @@ describe('agingBucketFor', () => {
 
   it('agrees with the AGING_BUCKETS definitions', () => {
     for (const bucket of AGING_BUCKETS) {
-      if (bucket.minDays > 0) expect(agingBucketFor(dueDaysAgo(bucket.minDays), asOf)).toBe(bucket.key);
-      if (bucket.maxDays !== null) expect(agingBucketFor(dueDaysAgo(bucket.maxDays), asOf)).toBe(bucket.key);
+      if (bucket.minDays > 0)
+        expect(agingBucketFor(dueDaysAgo(bucket.minDays), asOf)).toBe(bucket.key);
+      if (bucket.maxDays !== null)
+        expect(agingBucketFor(dueDaysAgo(bucket.maxDays), asOf)).toBe(bucket.key);
     }
   });
 
@@ -96,7 +98,10 @@ describe('buildAgingReport', () => {
   });
 
   it('never reports negative oldestDays for invoices not yet due', () => {
-    const { rows } = buildAgingReport([{ clientId: 'a', clientName: 'A', dueDate: dueDaysAgo(-30), balanceCents: 10 }], asOf);
+    const { rows } = buildAgingReport(
+      [{ clientId: 'a', clientName: 'A', dueDate: dueDaysAgo(-30), balanceCents: 10 }],
+      asOf,
+    );
     expect(rows[0]?.oldestDays).toBe(0);
   });
 
