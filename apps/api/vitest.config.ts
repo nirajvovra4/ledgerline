@@ -5,6 +5,6 @@ export default defineConfig({
     name: 'api',
     environment: 'node',
     include: ['src/**/*.test.ts', 'test/**/*.test.ts'],
-    execArgv: ['--disable-warning=ExperimentalWarning'],
+    poolOptions: { forks: { execArgv: ['--disable-warning=ExperimentalWarning'] } },
   },
 });

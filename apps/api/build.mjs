@@ -1,3 +1,4 @@
+/* global URL */
 import { build } from 'esbuild';
 import { readFileSync } from 'node:fs';
 
